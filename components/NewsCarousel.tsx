@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Image from "next/image";
@@ -10,6 +9,11 @@ import Image from "next/image";
 // Import Swiper CSS
 import "swiper/css";
 import "swiper/css/navigation";
+
+// Dynamically import ReactMarkdown and remarkGfm
+const LazyReactMarkdown = lazy(() => import("react-markdown"));
+const LazyRemarkGfm = lazy(() => import("remark-gfm"));
+
 import "swiper/css/pagination";
 
 interface Article {
@@ -129,9 +133,11 @@ function ArticleSlide({ article }: ArticleSlideProps) {
         {hasSummary && !showFullContent ? (
           <>
             <div className="prose prose-indigo mb-4">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {article.quick_summary}
-              </ReactMarkdown>
+              <Suspense fallback={<div>Loading markdown...</div>}>
+                <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {article.quick_summary}
+                </LazyReactMarkdown>
+              </Suspense>
             </div>
             <div className="flex justify-center">
               <button
@@ -145,9 +151,11 @@ function ArticleSlide({ article }: ArticleSlideProps) {
         ) : (
           <>
             <div className="prose prose-indigo mb-4">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {article.content}
-              </ReactMarkdown>
+              <Suspense fallback={<div>Loading markdown...</div>}>
+                <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {article.content}
+                </LazyReactMarkdown>
+              </Suspense>
             </div>
 
             {concepts.length > 0 && (
@@ -182,9 +190,11 @@ function ConceptCard({ concept }: { concept: Concept }) {
       </button>
       {showInfo && (
         <div className="prose mt-2 p-4 border rounded-md bg-gray-50">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {concept.info}
-          </ReactMarkdown>
+          <Suspense fallback={<div>Loading markdown...</div>}>
+            <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
+              {concept.info}
+            </LazyReactMarkdown>
+          </Suspense>
         </div>
       )}
     </div>
