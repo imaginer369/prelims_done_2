@@ -113,8 +113,8 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
           const data: Article[] = await res.json();
           const articlesWithConcepts = await fetchConceptsForArticles(data);
           setArticles(articlesWithConcepts);
-        } catch (error) {
-          console.error("Error fetching articles/concepts:", error);
+        } catch {
+          console.error("Error fetching articles/concepts:");
         } finally {
           setLoading(false);
         }
@@ -137,7 +137,7 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
       // Fetch concepts for these articles
       const articlesWithConcepts = await fetchConceptsForArticles(data);
       setArticles((prev) => [...prev, ...articlesWithConcepts]);
-    } catch (error) {
+    } catch {
       setHasMore(false);
     } finally {
       setIsFetchingMore(false);
@@ -148,16 +148,17 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
    * Swiper event handler: as user moves forward, always load next 5 articles
    * Triggers on every forward movement, not just at the end
    */
-  function handleSlideChange(swiper: any) {
+  function handleSlideChange(swiper: unknown) {
+    const s = swiper as { activeIndex: number };
     window.scrollTo(0, 0); // Scroll to top on slide change
-    console.log("[handleSlideChange] Swiper index:", swiper.activeIndex, "Articles loaded:", articles.length, "Has more:", hasMore, "Is fetching:", isFetchingMore);
+    console.log("[handleSlideChange] Swiper index:", s.activeIndex, "Articles loaded:", articles.length, "Has more:", hasMore, "Is fetching:", isFetchingMore);
     // Only load more if user moved forward (not on first slide)
     if (
-      swiper.activeIndex > 0 &&
+      s.activeIndex > 0 &&
       hasMore &&
       !isFetchingMore &&
       // Only trigger if we haven't already loaded for this index
-      articles.length <= swiper.activeIndex + fetchBatchSize
+      articles.length <= s.activeIndex + fetchBatchSize
     ) {
       console.log("[handleSlideChange] Triggering fetchMoreArticles()");
       fetchMoreArticles();
