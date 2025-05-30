@@ -1,21 +1,13 @@
 "use client";
 
-import { useEffect, useState, lazy, Suspense, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import Image from "next/image";
 import ArticleLoader from "./ArticleLoader";
 import ArticleSlide from "./ArticleSlide";
 
 // Import Swiper CSS
 import "swiper/css";
 import "swiper/css/navigation";
-
-// Dynamically import ReactMarkdown and remarkGfm
-const LazyReactMarkdown = lazy(() => import("react-markdown"));
-const LazyRemarkGfm = lazy(() => import("remark-gfm"));
-
 import "swiper/css/pagination";
 
 interface Article {
@@ -57,7 +49,6 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
   const fetchBatchSize = 5;
   // Whether there are more articles to fetch
   const [hasMore, setHasMore] = useState(initialArticles.length === articlesPerPage);
-  const currentOffset = useRef(initialArticles.length);
 
   // Force the theme class on the root element according to app theme, overriding device preference for the whole page and Swiper
   useEffect(() => {

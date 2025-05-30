@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import Image from "next/image";
 
 // Import Swiper CSS
 import "swiper/css";
@@ -70,10 +71,12 @@ export default function NewsCarousel() {
           <div className="min-h-screen m-0 p-0">
             {/* Article Image with strict 16:9 ratio */}
             <div className="relative w-full aspect-video m-0 p-0">
-              <img
+              <Image
                 src={article.image_url}
                 alt={article.title}
-                className="w-full h-full object-cover m-0 p-0"
+                layout="fill"
+                objectFit="cover"
+                className="m-0 p-0"
               />
             </div>
             {/* Article Title and Markdown Content */}
