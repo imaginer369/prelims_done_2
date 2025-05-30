@@ -58,6 +58,41 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
   const [hasMore, setHasMore] = useState(initialArticles.length === articlesPerPage);
   const currentOffset = useRef(initialArticles.length);
 
+  // Force the theme class on the root element according to app theme, overriding device preference for the whole page and Swiper
+  useEffect(() => {
+    const appTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    const root = document.documentElement;
+    if (appTheme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+    }
+    let meta = document.querySelector('meta[name="color-scheme"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'color-scheme');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', appTheme === 'dark' ? 'dark' : 'light');
+  }, []);
+
+  // Add theme classes to Swiper root
+  useEffect(() => {
+    const appTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    const swiperRoots = document.querySelectorAll('.swiper');
+    swiperRoots.forEach((el) => {
+      if (appTheme === 'dark') {
+        el.classList.add('dark');
+        el.classList.remove('light');
+      } else {
+        el.classList.add('light');
+        el.classList.remove('dark');
+      }
+    });
+  }, [articles]);
+
   // Fetch concepts for a batch of articles (used for client-side fetches)
   async function fetchConceptsForArticles(articlesBatch: Article[]): Promise<(Article & { concepts?: Concept[] })[]> {
     const conceptsResults = await Promise.all(
@@ -192,97 +227,104 @@ function ArticleSlide({ article }: ArticleSlideProps) {
   const hasSummary = article.quick_summary.trim().length > 0;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 py-8 px-2">
-      <div className="w-full max-w-3xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden flex flex-col">
-        {/* Article Image with 16:9 ratio */}
-        {article.image_url && (
-          <div className="relative w-full aspect-video bg-gray-100 dark:bg-slate-800 overflow-hidden">
-            <Image
-              src={article.image_url}
-              alt={article.title}
-              fill
-              className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
-              sizes="(max-width: 768px) 100vw, 700px"
-              priority={false}
-            />
-          </div>
-        )}
-        {/* Article Content */}
-        <div className="flex-1 flex flex-col p-6 sm:p-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-blue-200 mb-2 leading-tight">
-            {article.title}
-          </h1>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full">
-              Article
-            </span>
-            <span className="text-sm text-gray-400 italic">
-              {article.published_at &&
-                new Date(article.published_at).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-            </span>
-          </div>
-          {hasSummary && !showFullContent ? (
-            <>
-              <div className="prose prose-indigo max-w-none mb-6 text-lg text-gray-800 dark:prose-invert">
-                <Suspense fallback={<div>Loading markdown...</div>}>
-                  <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {article.quick_summary}
-                  </LazyReactMarkdown>
-                </Suspense>
-              </div>
-              <div className="flex justify-center mt-2">
-                <button
-                  onClick={() => setShowFullContent(true)}
-                  className="px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-full shadow-lg transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 text-lg"
-                >
-                  Read More
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="prose prose-indigo max-w-none mb-6 text-lg text-gray-800 dark:prose-invert animate-fade-in">
-                <Suspense fallback={<div>Loading markdown...</div>}>
-                  <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {article.content}
-                  </LazyReactMarkdown>
-                </Suspense>
-              </div>
-              {article.concepts && article.concepts.length > 0 && (
-                <section className="mt-10">
-                  <h2 className="text-2xl font-bold mb-6 text-blue-800 dark:text-blue-200 flex items-center gap-3">
-                    <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-blue-600 dark:bg-slate-800 dark:text-blue-300">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-                    </span>
-                    Important Concepts for Paper
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                    {article.concepts.map((concept) => (
-                      <ConceptCard key={concept.id} concept={concept} />
-                    ))}
-                  </div>
-                </section>
-              )}
-              {article.concepts && article.concepts.length === 0 && (
-                <div className="mt-10 text-gray-400 italic">No concepts found for this article.</div>
-              )}
-            </>
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-900 py-8 px-2 animate-fade-in">
+      <div className="w-full max-w-3xl relative rounded-3xl overflow-hidden flex flex-col shadow-2xl border border-gray-200 dark:border-slate-800 group bg-white dark:bg-slate-900">
+        {/* Animated gradient border */}
+        <div className="absolute inset-0 z-0 pointer-events-none rounded-3xl border-4 border-transparent group-hover:border-blue-400 group-focus-within:border-blue-500 transition-all duration-500 animate-gradient-border" style={{background: 'linear-gradient(120deg, #3b82f6 0%, #6366f1 50%, #06b6d4 100%)', opacity: 0.18}} />
+        {/* Article Card Content */}
+        <div className="relative z-10 bg-white dark:bg-slate-900 backdrop-blur-xl rounded-3xl flex flex-col">
+          {/* Article Image with 16:9 ratio */}
+          {article.image_url && (
+            <div className="relative w-full aspect-video bg-white dark:bg-slate-900 overflow-hidden">
+              <Image
+                src={article.image_url}
+                alt={article.title}
+                fill
+                className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+                sizes="(max-width: 768px) 100vw, 700px"
+                priority={false}
+              />
+            </div>
           )}
+          {/* Article Content */}
+          <div className="flex-1 flex flex-col p-6 sm:p-10">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-blue-200 mb-2 leading-tight drop-shadow-sm">
+              {article.title}
+            </h1>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-100 dark:text-blue-200 dark:bg-slate-800 px-3 py-1 rounded-full shadow-sm">
+                Article
+              </span>
+              <span className="text-sm text-gray-400 dark:text-gray-500 italic">
+                {article.published_at &&
+                  new Date(article.published_at).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+              </span>
+            </div>
+            {hasSummary && !showFullContent ? (
+              <>
+                <div className="prose prose-indigo max-w-none mb-6 text-lg text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
+                  <Suspense fallback={<div>Loading markdown...</div>}>
+                    <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {article.quick_summary}
+                    </LazyReactMarkdown>
+                  </Suspense>
+                </div>
+                <div className="flex justify-center mt-2">
+                  <button
+                    onClick={() => setShowFullContent(true)}
+                    className="px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-full shadow-lg transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 text-lg tracking-wide animate-fade-in dark:bg-gradient-to-r dark:from-blue-700 dark:to-cyan-700"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)',
+                      color: '#fff',
+                      boxShadow: '0 4px 24px 0 rgba(59,130,246,0.15)',
+                      border: 'none',
+                    }}
+                  >
+                    Read More
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="prose prose-indigo max-w-none mb-6 text-lg text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
+                  <Suspense fallback={<div>Loading markdown...</div>}>
+                    <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {article.content}
+                    </LazyReactMarkdown>
+                  </Suspense>
+                </div>
+                {article.concepts && article.concepts.length > 0 && (
+                  <section className="mt-10 animate-fade-in bg-white dark:bg-slate-900">
+                    <h2 className="text-2xl font-bold mb-6 text-blue-800 dark:text-blue-200 flex items-center gap-3">
+                      <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 text-blue-600 dark:bg-slate-800 dark:text-blue-300 shadow">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                      </span>
+                      Important Concepts for Paper
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full bg-white dark:bg-slate-900">
+                      {article.concepts.map((concept) => (
+                        <ConceptCard key={concept.id} concept={concept} />
+                      ))}
+                    </div>
+                  </section>
+                )}
+                {article.concepts && article.concepts.length === 0 && (
+                  <div className="mt-10 text-gray-400 dark:text-white italic animate-fade-in bg-white dark:bg-slate-900">No concepts found for this article.</div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-/**
- * ConceptCard component
- * - Shows a button for each concept, toggles info on click
- */
 function ConceptCard({ concept }: { concept: Concept }) {
   const [showInfo, setShowInfo] = useState(false);
 
@@ -290,14 +332,14 @@ function ConceptCard({ concept }: { concept: Concept }) {
     <div className="relative flex flex-col bg-white dark:bg-slate-900 border border-blue-200 dark:border-slate-700 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 group focus-within:ring-2 focus-within:ring-blue-400 min-h-[120px]">
       <button
         onClick={() => setShowInfo((prev) => !prev)}
-        className={`w-full flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-t-2xl shadow-lg transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 ${showInfo ? '' : 'rounded-b-2xl'}`}
+        className={`w-full flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-800 dark:to-blue-900 text-white font-semibold rounded-t-2xl shadow-lg transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 ${showInfo ? '' : 'rounded-b-2xl'}`}
         aria-expanded={showInfo}
         aria-controls={`concept-info-${concept.id}`}
       >
-        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-700">
+        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-white">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" /></svg>
         </span>
-        <span className="truncate text-lg font-medium flex-1 text-left">{concept.name}</span>
+        <span className="truncate text-lg font-medium flex-1 text-left text-black dark:text-white">{concept.name}</span>
         <svg className={`ml-2 w-5 h-5 transition-transform duration-200 ${showInfo ? 'rotate-180' : 'rotate-0'}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
       </button>
       <div
@@ -305,7 +347,7 @@ function ConceptCard({ concept }: { concept: Concept }) {
         className={`w-full overflow-hidden transition-all duration-300 ${showInfo ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'} rounded-b-2xl`}
         aria-hidden={!showInfo}
       >
-        <div className="prose prose-blue dark:prose-invert p-4 max-h-[320px] overflow-y-auto animate-fade-in bg-gradient-to-br from-blue-50 via-white to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 border border-blue-100 dark:border-slate-700 shadow-lg rounded-b-2xl">
+        <div className="prose prose-blue p-4 max-h-[320px] overflow-y-auto animate-fade-in bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-700 shadow-lg rounded-b-2xl text-black dark:text-white">
           <Suspense fallback={<div>Loading markdown...</div>}>
             <LazyReactMarkdown remarkPlugins={[remarkGfm]}>{concept.info}</LazyReactMarkdown>
           </Suspense>
