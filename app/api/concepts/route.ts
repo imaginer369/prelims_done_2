@@ -1,5 +1,5 @@
 // app/api/articles/route.ts
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { supabase } from '../../../lib/supabaseClient';
 
 export async function GET(req: NextRequest) {
@@ -23,7 +23,14 @@ export async function GET(req: NextRequest) {
   }
 
   // Flatten the nested array of concepts
-  const concepts = data.map((item) => item.concepts);
+  const concepts = data
+    .map((item) => item.concepts)
+    .filter(Boolean);
 
-  return NextResponse.json(concepts);
+  // If concepts is an array of arrays, flatten it
+  const flatConcepts = Array.isArray(concepts[0])
+    ? concepts.flat().filter(Boolean)
+    : concepts;
+
+  return NextResponse.json(flatConcepts);
 }
