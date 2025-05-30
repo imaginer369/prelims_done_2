@@ -5,6 +5,7 @@ import { Navigation, Pagination } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import Image from "next/image";
 
 interface Article {
   id: number;
@@ -52,10 +53,12 @@ export default function NewsCarousel() {
       {articles.map((article) => (
         <SwiperSlide key={article.id}>
           <div className="h-screen flex flex-col">
-            <img
+            <Image
               src={article.image_url}
               alt={article.title}
               className="w-full h-1/2 object-cover"
+              width={800}
+              height={400}
             />
             <div className="p-4 h-1/2 overflow-auto">
               <h2 className="text-2xl font-bold">{article.title}</h2>

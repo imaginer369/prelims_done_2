@@ -27,7 +27,7 @@ export default async function HomePage() {
         .select("concepts(id, name, info)")
         .eq("article_id", article.id);
       // Flatten and filter nulls
-      let concepts = (conceptsData || [])
+      const concepts = (conceptsData || [])
         .map((item) => item.concepts)
         .filter(Boolean)
         .flat();
