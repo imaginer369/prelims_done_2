@@ -23,10 +23,13 @@ interface Article {
 
 export default function ArticleSlide({ article }: { article: Article }) {
   const [showFullContent, setShowFullContent] = useState(false);
+  const [openConceptId, setOpenConceptId] = useState<number | null>(null);
   const hasSummary = article.quick_summary.trim().length > 0;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-900 py-8 px-2 animate-fade-in">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-white dark:bg-slate-900 py-8 px-2 animate-fade-in">
+      {/* Reduce the gap between header and article card */}
+      <div className="h-4 sm:h-6" />
       <div className="w-full max-w-3xl relative rounded-3xl overflow-hidden flex flex-col shadow-2xl border border-gray-200 dark:border-slate-800 group bg-white dark:bg-slate-900">
         {/* Animated gradient border */}
         <div className="absolute inset-0 z-0 pointer-events-none rounded-3xl border-4 border-transparent group-hover:border-blue-400 group-focus-within:border-blue-500 transition-all duration-500 animate-gradient-border" style={{background: 'linear-gradient(120deg, #3b82f6 0%, #6366f1 50%, #06b6d4 100%)', opacity: 0.18}} />
@@ -105,9 +108,14 @@ export default function ArticleSlide({ article }: { article: Article }) {
                       </span>
                       Important Concepts for Paper
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full bg-white dark:bg-slate-900">
+                    <div className="flex flex-col gap-4 w-full bg-white dark:bg-slate-900">
                       {article.concepts.map((concept) => (
-                        <ConceptCard key={concept.id} concept={concept} />
+                        <ConceptCard
+                          key={concept.id}
+                          concept={concept}
+                          open={openConceptId === concept.id}
+                          onToggle={() => setOpenConceptId(openConceptId === concept.id ? null : concept.id)}
+                        />
                       ))}
                     </div>
                   </section>
