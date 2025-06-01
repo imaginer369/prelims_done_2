@@ -17,7 +17,22 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-export default function News({ articles, error }: any) {
+// Define the types for articles and error
+interface Article {
+  id: number;
+  title: string;
+  quick_summary: string;
+  content: string;
+  image_url: string;
+  published_at: string;
+}
+
+interface NewsProps {
+  articles: Article[];
+  error: string | null;
+}
+
+export default function News({ articles, error }: NewsProps) {
   if (error) {
     return <div className="text-red-600">Failed to load articles.</div>;
   }
