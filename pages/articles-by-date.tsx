@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import NewsCarousel from "../components/NewsCarousel";
+import DateArticlesCarousel from "../components/DateArticlesCarousel";
 
 interface Article {
   id: number;
@@ -85,7 +85,7 @@ export default function ArticlesByDate() {
           </div>
         ) : null}
         {articles.length > 0 && (
-          <NewsCarousel initialArticles={articles} />
+          <DateArticlesCarousel articles={articles} />
         )}
       </div>
     </div>
