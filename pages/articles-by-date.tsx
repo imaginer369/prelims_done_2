@@ -43,23 +43,23 @@ export default function ArticlesByDate() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-2 py-6">
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+    <div className="relative min-h-[80vh] max-w-3xl mx-auto px-2 py-8 sm:py-12 flex flex-col items-center bg-gradient-to-br from-blue-50 via-white to-blue-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 rounded-3xl shadow-2xl border border-blue-100 dark:border-slate-800 mt-4 mb-8 overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 w-full px-2">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-700 dark:text-blue-200 mb-1 tracking-tight">Browse Articles by Date</h2>
-          <p className="text-gray-600 dark:text-gray-300 text-sm">Select a date to see all articles published on that day.</p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-700 dark:text-blue-200 mb-1 tracking-tight drop-shadow">Browse Articles by Date</h2>
+          <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">Select a date to see all articles published on that day.</p>
         </div>
-        <div className="relative">
+        <div className="relative flex items-center">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 dark:text-blue-300 text-xl pointer-events-none peer-focus:text-blue-600 transition-all">
+            📅
+          </span>
           <input
             type="date"
             value={date}
             onChange={handleDateChange}
-            className="peer border-2 border-blue-300 dark:border-blue-700 rounded-xl px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-slate-800 dark:text-white transition shadow-md hover:border-blue-400 focus:border-blue-500"
+            className="peer border-2 border-blue-300 dark:border-blue-700 rounded-xl pl-10 pr-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-slate-800 dark:text-white transition shadow-md hover:border-blue-400 focus:border-blue-500 font-semibold"
             style={{ minWidth: 180, maxWidth: 220 }}
           />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400 dark:text-blue-300 pointer-events-none peer-focus:text-blue-600 transition-all">
-            📅
-          </span>
         </div>
       </div>
       {loading && (
