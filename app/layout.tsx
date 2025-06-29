@@ -28,9 +28,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </div>
         </header>
         {/* Main content */}
-        <main className="m-0 p-0 bg-white dark:bg-slate-900 text-black dark:text-white">
+        <main className="m-0 p-0 bg-white dark:bg-slate-900 text-black dark:text-white min-h-screen pb-16">
           {children}
         </main>
+        {/* Bottom Navigation Bar */}
+        <div className="block md:hidden">
+          {/* Only show on mobile/tablet */}
+          {require('../components/BottomNav').default()}
+        </div>
       </body>
     </html>
   );
