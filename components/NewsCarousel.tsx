@@ -217,7 +217,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
           key={article.id}
           className="m-0 p-0"
         >
-          <ArticleSlide article={article} />
+          <ArticleSlide article={article} forceFullContent={false} />
         </SwiperSlide>
       ))}
       {/* Show loader slide at the end while fetching more */}

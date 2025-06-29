@@ -24,12 +24,14 @@ interface Article {
 // Always show full content for date-based carousel (detected via prop)
 // If you want to control this via prop, add a prop like `forceFullContent`
 
+
 interface ArticleSlideProps {
   article: Article;
+  forceFullContent?: boolean;
 }
 
-export default function ArticleSlide({ article }: ArticleSlideProps) {
-  const [showFullContent, setShowFullContent] = useState(true);
+export default function ArticleSlide({ article, forceFullContent = false }: ArticleSlideProps) {
+  const [showFullContent, setShowFullContent] = useState(forceFullContent);
   const [openConceptId, setOpenConceptId] = useState<number | null>(null);
   const hasSummary = article.quick_summary.trim().length > 0;
 
@@ -100,7 +102,7 @@ export default function ArticleSlide({ article }: ArticleSlideProps) {
               </>
             ) : (
               <>
-                <div className="prose prose-indigo max-w-none mb-6 text-lg text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
+                <div className="prose prose-indigo max-w-none mb-6 text-lg text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900 overflow-y-auto" style={{maxHeight: '60vh'}}>
                   <Suspense fallback={<div>Loading markdown...</div>}>
                     <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
                       {article.content}
