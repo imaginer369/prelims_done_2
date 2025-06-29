@@ -1,6 +1,9 @@
 import "../styles/globals.css";
 import HeaderMenu from "../components/HeaderMenu";
 import ThemeClientEffect from "../components/ThemeClientEffect";
+import dynamic from "next/dynamic";
+
+const BottomNav = dynamic(() => import("../components/BottomNav"), { ssr: false });
 
 export const metadata = {
   title: "Prelims Done",
@@ -34,8 +37,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         {/* Bottom Navigation Bar */}
         <div className="block md:hidden">
           {/* Only show on mobile/tablet */}
-          {require('../components/BottomNav').default()}
+          <BottomNav />
         </div>
+
+// Dynamic import for BottomNav to avoid require() and SSR issues
+import dynamic from "next/dynamic";
+const BottomNav = dynamic(() => import("../components/BottomNav"), { ssr: false });
       </body>
     </html>
   );
