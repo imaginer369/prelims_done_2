@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ArticleLoader from "./ArticleLoader";
 import ArticleSlide from "./ArticleSlide";
@@ -49,6 +49,7 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
   const fetchBatchSize = 5;
   // Whether there are more articles to fetch
   const [hasMore, setHasMore] = useState(initialArticles.length === articlesPerPage);
+  const swiperRef = useRef<any>(null);
 
   // Force the theme class on the root element according to app theme, overriding device preference for the whole page and Swiper
   useEffect(() => {
@@ -165,6 +166,21 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
     }
   }
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      // Only trigger on desktop/laptop (optional: check screen size or pointer type)
+      if (window.matchMedia("(pointer: fine)").matches) {
+        if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+          swiperRef.current?.slidePrev();
+        } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+          swiperRef.current?.slideNext();
+        }
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // Show loader while fetching initial SSR/client batch
   if (loading) {
     return <ArticleLoader />;
@@ -187,6 +203,7 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
       slidesPerView={1}
       className="m-0 p-0"
       onSlideChange={handleSlideChange}
+      onSwiper={(swiper) => (swiperRef.current = swiper)}
     >
       {articles.map((article) => (
         <SwiperSlide
