@@ -49,7 +49,7 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
   const fetchBatchSize = 5;
   // Whether there are more articles to fetch
   const [hasMore, setHasMore] = useState(initialArticles.length === articlesPerPage);
-  const swiperRef = useRef<any>(null);
+  const swiperRef = useRef<import("swiper").Swiper | null>(null);
 
   // Force the theme class on the root element according to app theme, overriding device preference for the whole page and Swiper
   useEffect(() => {

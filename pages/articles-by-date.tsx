@@ -1,8 +1,17 @@
 import { useState } from "react";
 
+interface Article {
+  id: number;
+  title: string;
+  quick_summary: string;
+  content: string;
+  image_url: string;
+  published_at: string;
+}
+
 export default function ArticlesByDate() {
   const [date, setDate] = useState("");
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -12,10 +21,11 @@ export default function ArticlesByDate() {
     try {
       const res = await fetch(`/api/articles?date=${selectedDate}`);
       if (!res.ok) throw new Error("Failed to fetch articles");
-      const data = await res.json();
+      const data: Article[] = await res.json();
       setArticles(data);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Unknown error");
     } finally {
       setLoading(false);
     }
