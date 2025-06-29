@@ -63,7 +63,18 @@ export default function ArticlesByDate() {
       {error && <div className="text-red-500 text-center font-semibold py-4">{error}</div>}
       <div className="grid gap-6 mt-4">
         {articles.length === 0 && date && !loading && !error && (
-          <div className="text-center text-gray-500 dark:text-gray-400 py-8 text-lg">No articles found for this date.</div>
+          <div className="flex flex-col items-center justify-center py-12 opacity-80">
+            <svg width="64" height="64" fill="none" viewBox="0 0 64 64" className="mb-4">
+              <circle cx="32" cy="32" r="30" fill="#e0e7ef" className="dark:fill-slate-700" />
+              <path d="M20 40c0-4 8-6 12-6s12 2 12 6v2H20v-2Z" fill="#a0aec0" />
+              <ellipse cx="32" cy="28" rx="10" ry="8" fill="#fff" />
+              <ellipse cx="28" cy="28" rx="2" ry="2.5" fill="#a0aec0" />
+              <ellipse cx="36" cy="28" rx="2" ry="2.5" fill="#a0aec0" />
+              <path d="M28 34c1.5 1 6.5 1 8 0" stroke="#a0aec0" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            <div className="text-xl font-semibold text-gray-500 dark:text-gray-300 mb-1">No articles found</div>
+            <div className="text-gray-400 dark:text-gray-500 text-sm">Looks like there are no articles published on this day.<br />Try selecting a different date.</div>
+          </div>
         )}
         {articles.map((article) => (
           <div
