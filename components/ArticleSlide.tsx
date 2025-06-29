@@ -59,7 +59,7 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
             </div>
           )}
           {/* Article Content */}
-          <div className="flex-1 flex flex-col p-6 sm:p-10">
+          <div className="flex-1 flex flex-col p-6 sm:p-10 overflow-y-auto" style={{ maxHeight: '60vh' }}>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-blue-200 mb-2 leading-tight drop-shadow-sm">
               {article.title}
             </h1>
@@ -102,7 +102,7 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
               </>
             ) : (
               <>
-                <div className="prose prose-indigo max-w-none mb-6 text-lg text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900 overflow-y-auto" style={{maxHeight: '60vh'}}>
+                <div className="prose prose-indigo max-w-none mb-6 text-lg text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
                   <Suspense fallback={<div>Loading markdown...</div>}>
                     <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
                       {article.content}
