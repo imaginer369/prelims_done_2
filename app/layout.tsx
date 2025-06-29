@@ -33,8 +33,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
         {children}
       </main>
       {/* Bottom Navigation Bar */}
-      <div className="block md:hidden">
-        {/* Only show on mobile/tablet */}
+      <div className="block">
+        {/* Show on all screen sizes */}
         <BottomNavClientWrapper />
       </div>
     </>
