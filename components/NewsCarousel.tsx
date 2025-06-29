@@ -26,6 +26,7 @@ interface Concept {
 }
 
 interface NewsCarouselProps {
+  articles?: Article[];
   initialArticles?: Article[];
 }
 
@@ -36,19 +37,23 @@ interface NewsCarouselProps {
  * - Shows loading animation when fetching more
  * - Uses Swiper for swipeable article slides
  */
-export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps) {
-  // State for all loaded articles, each with concepts
-  const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(initialArticles);
-  // Loading state for initial SSR hydration
-  const [loading, setLoading] = useState(initialArticles.length === 0);
+export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
+  // If articles prop is provided, use it directly (for date-based or filtered carousels)
+  // Otherwise, use SSR initialArticles and enable progressive loading
+  const isControlled = Array.isArray(propArticles);
+  const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(
+    isControlled ? propArticles! : initialArticles
+  );
+  // Loading state for initial SSR hydration (only for SSR mode)
+  const [loading, setLoading] = useState(!isControlled && initialArticles.length === 0);
   // Loading state for progressive client fetch
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   // Number of articles to SSR (first batch)
   const articlesPerPage = 10;
   // Number of articles to fetch per client-side batch
   const fetchBatchSize = 5;
-  // Whether there are more articles to fetch
-  const [hasMore, setHasMore] = useState(initialArticles.length === articlesPerPage);
+  // Whether there are more articles to fetch (only for SSR mode)
+  const [hasMore, setHasMore] = useState(!isControlled && initialArticles.length === articlesPerPage);
   // Use type 'any' for Swiper ref to avoid type errors with Swiper types
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const swiperRef = useRef<any>(null);
@@ -109,7 +114,7 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
    * Only fetches the first 10 articles
    */
   useEffect(() => {
-    if (initialArticles.length === 0) {
+    if (!isControlled && initialArticles.length === 0) {
       async function fetchArticlesAndConcepts() {
         try {
           const res = await fetch("/api/articles?limit=10&offset=0");
@@ -124,14 +129,14 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
       }
       fetchArticlesAndConcepts();
     }
-  }, [initialArticles]);
+  }, [initialArticles, isControlled]);
 
   /**
    * Fetch next batch of articles (5 at a time) as user swipes to the end
    * This is client-only and not SSR
    */
   async function fetchMoreArticles() {
-    if (isFetchingMore || !hasMore) return;
+    if (isControlled || isFetchingMore || !hasMore) return;
     setIsFetchingMore(true);
     try {
       const res = await fetch(`/api/articles?limit=${fetchBatchSize}&offset=${articles.length}`);
@@ -154,17 +159,17 @@ export default function NewsCarousel({ initialArticles = [] }: NewsCarouselProps
   function handleSlideChange(swiper: unknown) {
     const s = swiper as { activeIndex: number };
     window.scrollTo(0, 0); // Scroll to top on slide change
-    console.log("[handleSlideChange] Swiper index:", s.activeIndex, "Articles loaded:", articles.length, "Has more:", hasMore, "Is fetching:", isFetchingMore);
-    // Only load more if user moved forward (not on first slide)
-    if (
-      s.activeIndex > 0 &&
-      hasMore &&
-      !isFetchingMore &&
-      // Only trigger if we haven't already loaded for this index
-      articles.length <= s.activeIndex + fetchBatchSize
-    ) {
-      console.log("[handleSlideChange] Triggering fetchMoreArticles()");
-      fetchMoreArticles();
+    if (!isControlled) {
+      // Only load more if user moved forward (not on first slide)
+      if (
+        s.activeIndex > 0 &&
+        hasMore &&
+        !isFetchingMore &&
+        // Only trigger if we haven't already loaded for this index
+        articles.length <= s.activeIndex + fetchBatchSize
+      ) {
+        fetchMoreArticles();
+      }
     }
   }
 

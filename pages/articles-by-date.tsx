@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import DateArticlesCarousel from "../components/DateArticlesCarousel";
+import NewsCarousel from "../components/NewsCarousel";
 
 interface Article {
   id: number;
@@ -24,7 +24,19 @@ export default function ArticlesByDate() {
       const res = await fetch(`/api/articles?date=${selectedDate}`);
       if (!res.ok) throw new Error("Failed to fetch articles");
       const data: Article[] = await res.json();
-      setArticles(data);
+      // Fetch concepts for each article, just like NewsCarousel does
+      const articlesWithConcepts = await Promise.all(
+        data.map(async (article) => {
+          try {
+            const resConcepts = await fetch(`/api/concepts?article_id=${article.id}`);
+            const concepts = await resConcepts.json();
+            return { ...article, concepts: Array.isArray(concepts) ? concepts : [] };
+          } catch {
+            return { ...article, concepts: [] };
+          }
+        })
+      );
+      setArticles(articlesWithConcepts);
     } catch (err) {
       if (err instanceof Error) setError(err.message);
       else setError("Unknown error");
@@ -85,7 +97,7 @@ export default function ArticlesByDate() {
           </div>
         ) : null}
         {articles.length > 0 && (
-          <DateArticlesCarousel articles={articles} />
+          <NewsCarousel articles={articles} />
         )}
       </div>
     </div>
