@@ -16,7 +16,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="bg-white dark:bg-slate-900 text-black dark:text-white m-0 p-0">
         <ThemeClientEffect />
         {/* Header with Logo and Menu */}
@@ -39,10 +39,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {/* Only show on mobile/tablet */}
           <BottomNav />
         </div>
-
-// Dynamic import for BottomNav to avoid require() and SSR issues
-import dynamic from "next/dynamic";
-const BottomNav = dynamic(() => import("../components/BottomNav"), { ssr: false });
       </body>
     </html>
   );
