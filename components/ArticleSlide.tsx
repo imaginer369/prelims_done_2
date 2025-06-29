@@ -21,8 +21,14 @@ interface Article {
   concepts?: Concept[];
 }
 
-  // Always show full content for date-based carousel (detected via prop)
-  // If you want to control this via prop, add a prop like `forceFullContent`
+// Always show full content for date-based carousel (detected via prop)
+// If you want to control this via prop, add a prop like `forceFullContent`
+
+interface ArticleSlideProps {
+  article: Article;
+}
+
+export default function ArticleSlide({ article }: ArticleSlideProps) {
   const [showFullContent, setShowFullContent] = useState(true);
   const [openConceptId, setOpenConceptId] = useState<number | null>(null);
   const hasSummary = article.quick_summary.trim().length > 0;

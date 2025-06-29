@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useEffect } from "react";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import ArticleSlide from "./ArticleSlide";
 import "swiper/css";
@@ -20,8 +21,6 @@ interface DateArticlesCarouselProps {
   articles: Article[];
 }
 
-// Use Swiper's type for ref, fallback to 'any' for compatibility
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function DateArticlesCarousel({ articles }: DateArticlesCarouselProps) {
   const swiperRef = useRef<{ slidePrev: () => void; slideNext: () => void } | null>(null);
 
@@ -42,7 +41,7 @@ export default function DateArticlesCarousel({ articles }: DateArticlesCarouselP
 
   // Only render if there are articles
   if (!articles.length) {
-    return <></>;
+    return null;
   }
 
   return (
