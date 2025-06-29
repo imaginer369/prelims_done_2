@@ -1,4 +1,6 @@
+"use client";
 import { useState } from "react";
+import NewsCarousel from "../components/NewsCarousel";
 
 interface Article {
   id: number;
@@ -47,12 +49,18 @@ export default function ArticlesByDate() {
           <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-700 dark:text-blue-200 mb-1 tracking-tight">Browse Articles by Date</h2>
           <p className="text-gray-600 dark:text-gray-300 text-sm">Select a date to see all articles published on that day.</p>
         </div>
-        <input
-          type="date"
-          value={date}
-          onChange={handleDateChange}
-          className="border border-blue-300 dark:border-blue-700 rounded-lg px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-slate-800 dark:text-white transition"
-        />
+        <div className="relative">
+          <input
+            type="date"
+            value={date}
+            onChange={handleDateChange}
+            className="peer border-2 border-blue-300 dark:border-blue-700 rounded-xl px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-slate-800 dark:text-white transition shadow-md hover:border-blue-400 focus:border-blue-500"
+            style={{ minWidth: 180, maxWidth: 220 }}
+          />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400 dark:text-blue-300 pointer-events-none peer-focus:text-blue-600 transition-all">
+            📅
+          </span>
+        </div>
       </div>
       {loading && (
         <div className="flex justify-center items-center py-8">
@@ -61,8 +69,8 @@ export default function ArticlesByDate() {
         </div>
       )}
       {error && <div className="text-red-500 text-center font-semibold py-4">{error}</div>}
-      <div className="grid gap-6 mt-4">
-        {articles.length === 0 && date && !loading && !error && (
+      <div className="mt-4">
+        {articles.length === 0 && date && !loading && !error ? (
           <div className="flex flex-col items-center justify-center py-12 opacity-80">
             <svg width="64" height="64" fill="none" viewBox="0 0 64 64" className="mb-4">
               <circle cx="32" cy="32" r="30" fill="#e0e7ef" className="dark:fill-slate-700" />
@@ -75,29 +83,10 @@ export default function ArticlesByDate() {
             <div className="text-xl font-semibold text-gray-500 dark:text-gray-300 mb-1">No articles found</div>
             <div className="text-gray-400 dark:text-gray-500 text-sm">Looks like there are no articles published on this day.<br />Try selecting a different date.</div>
           </div>
+        ) : null}
+        {articles.length > 0 && (
+          <NewsCarousel initialArticles={articles} />
         )}
-        {articles.map((article) => (
-          <div
-            key={article.id}
-            className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg transition-shadow p-6 flex flex-col gap-2"
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
-              <h3 className="font-bold text-lg sm:text-xl text-blue-800 dark:text-blue-100 mb-1 sm:mb-0">{article.title}</h3>
-              <span className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded">
-                {new Date(article.published_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-              </span>
-            </div>
-            <p className="text-gray-700 dark:text-gray-200 text-sm mb-1 line-clamp-3">{article.quick_summary}</p>
-            <div className="flex gap-2 mt-2">
-              <a
-                href={"/news?id=" + article.id}
-                className="inline-block px-4 py-1.5 rounded bg-blue-600 text-white text-xs font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-              >
-                Read Full Article
-              </a>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   );
