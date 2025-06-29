@@ -28,6 +28,7 @@ interface Concept {
 interface NewsCarouselProps {
   articles?: Article[];
   initialArticles?: Article[];
+  forceFullContent?: boolean;
 }
 
 /**
@@ -37,7 +38,7 @@ interface NewsCarouselProps {
  * - Shows loading animation when fetching more
  * - Uses Swiper for swipeable article slides
  */
-export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
+export default function NewsCarousel({ articles: propArticles, initialArticles = [], forceFullContent = false }: NewsCarouselProps) {
   // If articles prop is provided, use it directly (for date-based or filtered carousels)
   // Otherwise, use SSR initialArticles and enable progressive loading
   const isControlled = Array.isArray(propArticles);
@@ -217,7 +218,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
           key={article.id}
           className="m-0 p-0"
         >
-          <ArticleSlide article={article} forceFullContent={false} />
+          <ArticleSlide article={article} forceFullContent={forceFullContent} />
         </SwiperSlide>
       ))}
       {/* Show loader slide at the end while fetching more */}

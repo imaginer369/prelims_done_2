@@ -97,7 +97,7 @@ export default function ArticlesByDate() {
           </div>
         ) : null}
         {articles.length > 0 && (
-          <NewsCarousel articles={articles} />
+          <NewsCarousel articles={articles} forceFullContent={false} />
         )}
       </div>
     </div>
