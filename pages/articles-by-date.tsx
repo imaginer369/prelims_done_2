@@ -41,28 +41,53 @@ export default function ArticlesByDate() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Select Date to View Articles</h2>
-      <input
-        type="date"
-        value={date}
-        onChange={handleDateChange}
-        className="border rounded px-3 py-2 mb-4 w-full"
-      />
-      {loading && <div>Loading...</div>}
-      {error && <div className="text-red-500">{error}</div>}
-      <ul className="space-y-4 mt-4">
+    <div className="max-w-3xl mx-auto px-2 py-6">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-700 dark:text-blue-200 mb-1 tracking-tight">Browse Articles by Date</h2>
+          <p className="text-gray-600 dark:text-gray-300 text-sm">Select a date to see all articles published on that day.</p>
+        </div>
+        <input
+          type="date"
+          value={date}
+          onChange={handleDateChange}
+          className="border border-blue-300 dark:border-blue-700 rounded-lg px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-slate-800 dark:text-white transition"
+        />
+      </div>
+      {loading && (
+        <div className="flex justify-center items-center py-8">
+          <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></span>
+          <span className="ml-3 text-blue-600 dark:text-blue-300 font-medium">Loading articles...</span>
+        </div>
+      )}
+      {error && <div className="text-red-500 text-center font-semibold py-4">{error}</div>}
+      <div className="grid gap-6 mt-4">
         {articles.length === 0 && date && !loading && !error && (
-          <li>No articles found for this date.</li>
+          <div className="text-center text-gray-500 dark:text-gray-400 py-8 text-lg">No articles found for this date.</div>
         )}
         {articles.map((article) => (
-          <li key={article.id} className="border rounded p-4 bg-white dark:bg-gray-800">
-            <h3 className="font-semibold text-lg mb-2">{article.title}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{article.published_at}</p>
-            <p>{article.quick_summary}</p>
-          </li>
+          <div
+            key={article.id}
+            className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg transition-shadow p-6 flex flex-col gap-2"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
+              <h3 className="font-bold text-lg sm:text-xl text-blue-800 dark:text-blue-100 mb-1 sm:mb-0">{article.title}</h3>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded">
+                {new Date(article.published_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+              </span>
+            </div>
+            <p className="text-gray-700 dark:text-gray-200 text-sm mb-1 line-clamp-3">{article.quick_summary}</p>
+            <div className="flex gap-2 mt-2">
+              <a
+                href={"/news?id=" + article.id}
+                className="inline-block px-4 py-1.5 rounded bg-blue-600 text-white text-xs font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              >
+                Read Full Article
+              </a>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
