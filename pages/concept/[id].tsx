@@ -24,8 +24,8 @@ export default function ConceptDetail() {
       try {
         const res = await fetch(`/api/concepts?article_id=${id}`);
         if (!res.ok) throw new Error("Failed to fetch concept");
-        const data = await res.json();)
-        console.log(data);
+        const data = await res.json();
+        console.log(data)
         if (Array.isArray(data) && data.length > 0) setConcept(data[0]);
         else setError("Concept not found");
       } catch (err) {
