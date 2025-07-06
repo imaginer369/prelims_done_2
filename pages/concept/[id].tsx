@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
+const LazyReactMarkdown = lazy(() => import("react-markdown"));
+import remarkGfm from "remark-gfm";
 
 interface Concept {
   id: number;
@@ -47,13 +49,32 @@ export default function ConceptDetail() {
       ) : error ? (
         <div className="text-red-500 font-semibold">{error}</div>
       ) : concept ? (
-        <div className="max-w-2xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-blue-100 dark:border-slate-800 p-8 animate-fade-in">
-          <h1 className="text-3xl font-extrabold text-blue-700 dark:text-blue-200 mb-4">{concept.name}</h1>
-          <div className="prose prose-indigo dark:prose-invert text-lg text-gray-800 dark:text-white">
-            {concept.info}
-          </div>
-        </div>
+        <ConceptCard concept={concept} />
       ) : null}
+    </div>
+  );
+}
+
+function ConceptCard({ concept }: { concept: Concept }) {
+  const [showInfo, setShowInfo] = useState(false);
+
+  return (
+    <div className="w-full md:w-auto max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-blue-100 dark:border-slate-800 p-8 animate-fade-in flex flex-col items-center">
+      <button
+        onClick={() => setShowInfo((prev) => !prev)}
+        className="px-6 py-3 mb-4 bg-blue-700 text-white font-extrabold text-2xl rounded-lg shadow hover:bg-blue-900 transition w-full"
+      >
+        {concept.name}
+      </button>
+      {showInfo && (
+        <div className="prose prose-indigo dark:prose-invert mt-2 p-4 border rounded-md bg-gray-50 dark:bg-slate-800 text-lg text-gray-800 dark:text-white w-full">
+          <Suspense fallback={<div>Loading markdown...</div>}>
+            <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
+              {concept.info}
+            </LazyReactMarkdown>
+          </Suspense>
+        </div>
+      )}
     </div>
   );
 }
