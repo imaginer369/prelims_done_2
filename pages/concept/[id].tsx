@@ -20,7 +20,7 @@ export default function ConceptDetail() {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch(`/api/concepts?id=${id}`);
+        const res = await fetch(`/api/concepts?article_id=${id}`);
         if (!res.ok) throw new Error("Failed to fetch concept");
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) setConcept(data[0]);
