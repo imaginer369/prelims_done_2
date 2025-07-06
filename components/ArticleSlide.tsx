@@ -2,7 +2,7 @@
 import { useState, Suspense, lazy } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import ConceptCard from "./ConceptCard";
+// import ConceptCard from "./ConceptCard";
 const LazyReactMarkdown = lazy(() => import("react-markdown"));
 import remarkGfm from "remark-gfm";
 
