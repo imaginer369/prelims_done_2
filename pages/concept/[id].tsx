@@ -23,7 +23,6 @@ export default function ConceptDetail() {
       setError("");
       try {
         const res = await fetch(`/api/concept?id=${id}`);
-        console.log(res);
         if (!res.ok) throw new Error("Failed to fetch concept");
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) setConcept(data[0]);
@@ -50,32 +49,17 @@ export default function ConceptDetail() {
       ) : error ? (
         <div className="text-red-500 font-semibold">{error}</div>
       ) : concept ? (
-        <ConceptCard concept={concept} />
-      ) : null}
-    </div>
-  );
-}
-
-function ConceptCard({ concept }: { concept: Concept }) {
-  const [showInfo, setShowInfo] = useState(false);
-
-  return (
-    <div className="w-full md:w-auto max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-blue-100 dark:border-slate-800 p-8 animate-fade-in flex flex-col items-center">
-      <button
-        onClick={() => setShowInfo((prev) => !prev)}
-        className="px-6 py-3 mb-4 bg-blue-700 text-white font-extrabold text-2xl rounded-lg shadow hover:bg-blue-900 transition w-full"
-      >
-        {concept.name}
-      </button>
-      {showInfo && (
-        <div className="prose prose-indigo dark:prose-invert mt-2 p-4 border rounded-md bg-gray-50 dark:bg-slate-800 text-lg text-gray-800 dark:text-white w-full">
-          <Suspense fallback={<div>Loading markdown...</div>}>
-            <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
-              {concept.info}
-            </LazyReactMarkdown>
-          </Suspense>
+        <div className="w-full md:w-auto max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-blue-100 dark:border-slate-800 p-8 animate-fade-in flex flex-col items-center">
+          <div className="font-extrabold text-2xl mb-4 text-blue-700 dark:text-blue-200">{concept.name}</div>
+          <div className="prose prose-indigo dark:prose-invert mt-2 p-4 border rounded-md bg-gray-50 dark:bg-slate-800 text-lg text-gray-800 dark:text-white w-full">
+            <Suspense fallback={<div>Loading markdown...</div>}>
+              <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
+                {concept.info}
+              </LazyReactMarkdown>
+            </Suspense>
+          </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
