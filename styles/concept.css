@@ -1,0 +1,124 @@
+.concept-bg {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, #e0e7ef 0%, #fff 60%, #bae6fd 100%);
+}
+
+.concept-decor {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.concept-decor .circle1 {
+  position: absolute;
+  top: -8rem;
+  left: -8rem;
+  width: 24rem;
+  height: 24rem;
+  background: #bfdbfe;
+  border-radius: 9999px;
+  opacity: 0.18;
+  filter: blur(48px);
+  animation: pulse 2.5s infinite alternate;
+}
+
+.concept-decor .circle2 {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20rem;
+  height: 20rem;
+  background: #a7f3d0;
+  border-radius: 9999px;
+  opacity: 0.18;
+  filter: blur(32px);
+  animation: pulse 3s infinite alternate-reverse;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.18; }
+  100% { opacity: 0.28; }
+}
+
+.concept-section {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.92);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 40px 0 rgba(59,130,246,0.10);
+  border: 1.5px solid #dbeafe;
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fade-in 0.7s;
+}
+
+@media (min-width: 640px) {
+  .concept-section {
+    padding: 3.5rem 3rem;
+  }
+}
+
+.concept-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1d4ed8;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(59,130,246,0.08);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.concept-markdown {
+  width: 100%;
+  background: rgba(255,255,255,0.85);
+  border-radius: 1rem;
+  padding: 1.5rem 1rem;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 2px 12px 0 rgba(59,130,246,0.06);
+  font-size: 1.15rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .concept-markdown {
+    padding: 2rem 2rem;
+    font-size: 1.25rem;
+  }
+}
+
+.concept-back-btn {
+  position: absolute;
+  left: 1.5rem;
+  top: 1.5rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 9999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+  box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+  border: none;
+  transition: background 0.2s;
+  font-size: 1.1rem;
+}
+
+.concept-back-btn:hover {
+  background: #93c5fd;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
