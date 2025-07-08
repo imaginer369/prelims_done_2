@@ -1,8 +1,8 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function QuizByDateQuiz() {
+function QuizByDateQuizInner() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   interface Option {
@@ -75,4 +75,13 @@ export default function QuizByDateQuiz() {
       </ol>
     </div>
   );
+}
+
+export default function QuizByDateQuiz() {
+  return (
+    <Suspense>
+      <QuizByDateQuizInner />
+    </Suspense>
+  );
+}
 }
