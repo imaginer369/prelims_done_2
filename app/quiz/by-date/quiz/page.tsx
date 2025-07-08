@@ -103,7 +103,7 @@ function QuizByDateQuizInner() {
       {!submitted && (
         <div className="mb-8">
           <div className="bg-white dark:bg-slate-900 rounded-xl shadow p-6 border border-blue-100 dark:border-slate-700">
-            <div className="font-semibold mb-3">Q{current + 1}. <span dangerouslySetInnerHTML={{ __html: marked.parse(q.text) }} /></div>
+            <div className="font-semibold mb-3 prose prose-blue dark:prose-invert max-w-none mb-3">Q{current + 1}. <span dangerouslySetInnerHTML={{ __html: marked.parse(q.text) }} /></div>
             <ul className="space-y-2">
               {q.options?.map((opt) => (
                 <li key={opt.option_id} className="flex items-center">
