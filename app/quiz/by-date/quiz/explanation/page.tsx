@@ -2,13 +2,32 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 
+
+interface Option {
+  option_id: number;
+  question_id: number;
+  option_text: string;
+  is_correct: boolean;
+  explanation: string;
+}
+
+interface Question {
+  question_id: number;
+  article_id: number;
+  concept_id: number;
+  date: string;
+  text: string;
+  topic: number;
+  difficulty: number;
+  options: Option[];
+}
+
 function ExplanationInner() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [question_id: number]: number | null }>({});
   const [error, setError] = useState("");
-
   useEffect(() => {
     if (!searchParams) return;
     const date = searchParams.get("date");
@@ -26,13 +45,13 @@ function ExplanationInner() {
     if (!date) return;
     setLoading(true);
     fetch(`/api/quiz/by-date?date=${encodeURIComponent(date)}&numQuestions=${encodeURIComponent(numQuestions || "10")}&difficulty=${encodeURIComponent(difficulty || "Mix")}&topic=${encodeURIComponent(topic || "All")}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data: { questions: Question[] }) => {
         setQuestions(data.questions || []);
         setError("");
         setLoading(false);
       })
-      .catch(err => {
+      .catch(() => {
         setError("Failed to fetch questions");
         setLoading(false);
       });
@@ -46,14 +65,14 @@ function ExplanationInner() {
     <div className="max-w-2xl mx-auto py-8 px-2">
       <h1 className="text-2xl font-bold mb-6 text-blue-700 dark:text-blue-200 text-center">Quiz Explanations</h1>
       <ol className="space-y-8">
-        {questions.map((q, idx) => {
+        {questions.map((q: Question, idx: number) => {
           const userSelected = answers[q.question_id];
-          const correctOption = q.options.find((o: any) => o.is_correct)?.option_id;
+          const correctOption = q.options.find((o: Option) => o.is_correct)?.option_id;
           return (
             <li key={q.question_id} className="bg-white dark:bg-slate-900 rounded-xl shadow p-6 border border-blue-100 dark:border-slate-700">
               <div className="font-semibold mb-3">Q{idx + 1}. {q.text}</div>
               <ul className="space-y-2 mb-3">
-                {q.options.map((opt: any) => {
+                {q.options.map((opt: Option) => {
                   let optionClass = "";
                   if (userSelected === opt.option_id && userSelected !== correctOption) {
                     optionClass = "bg-red-100 dark:bg-red-900 border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 font-bold";
