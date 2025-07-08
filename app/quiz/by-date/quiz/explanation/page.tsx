@@ -71,16 +71,14 @@ function ExplanationInner() {
           return (
             <li key={q.question_id} className="bg-white dark:bg-slate-900 rounded-xl shadow p-6 border border-blue-100 dark:border-slate-700">
               <div className="font-semibold mb-3">Q{idx + 1}. {
-                q.text.includes("\n")
-                  ? q.text.split(/\n/).map((line, i, arr) => (
-                      <span key={i}>
-                        {line}
-                        {i < arr.length - 1 && <br />}
-                      </span>
-                    ))
-                  : q.text
-              }
-              </div>
+                // Render newlines in question text as <br />
+                q.text.split(/\\n/).map((line, i, arr) => (
+                  <span key={i}>
+                    {line}
+                    {i < arr.length - 1 && <br />}
+                  </span>
+                ))
+              }</div>
               <ul className="space-y-2 mb-3">
                 {q.options.map((opt: Option) => {
                   let optionClass = "";
