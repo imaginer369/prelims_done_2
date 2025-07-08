@@ -12,7 +12,7 @@ const topics = [
   "General Science"
 ];
 
-const difficulties = ["Mix", "Easy", "Medium", "Hard"];
+const difficulties = ["Mix", "Easy", "Medium", "Hard", "Super Hard"];
 
 function getYesterday() {
   const d = new Date();
