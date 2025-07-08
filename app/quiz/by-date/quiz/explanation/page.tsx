@@ -70,7 +70,7 @@ function ExplanationInner() {
           const correctOption = q.options.find((o: Option) => o.is_correct)?.option_id;
           return (
             <li key={q.question_id} className="bg-white dark:bg-slate-900 rounded-xl shadow p-6 border border-blue-100 dark:border-slate-700">
-              <div className="font-semibold mb-3">Q{idx + 1}. {q.text}</div>
+              <div className="font-semibold mb-3">Q{idx + 1}. <span dangerouslySetInnerHTML={{ __html: q.text.replace(/\n/g, '<br/>').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;') }} /></div>
               <ul className="space-y-2 mb-3">
                 {q.options.map((opt: Option) => {
                   let optionClass = "";
