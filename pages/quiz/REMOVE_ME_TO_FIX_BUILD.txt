@@ -1,0 +1,3 @@
+This file is a reminder: You must delete the entire /pages/quiz directory (including this file and any index.tsx) to resolve the Next.js build conflict. The quiz page is now implemented in /app/quiz/page.tsx.
+
+You can safely remove this directory.
