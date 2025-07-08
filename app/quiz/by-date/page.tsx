@@ -26,12 +26,23 @@ export default function QuizByDate() {
   const [difficulty, setDifficulty] = useState("Mix");
   const [topic, setTopic] = useState("All");
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams({
+      date,
+      numQuestions: numQuestions.toString(),
+      difficulty,
+      topic,
+    });
+    window.location.href = `/quiz/by-date/quiz?${params.toString()}`;
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] py-10 px-2">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-blue-700 dark:text-blue-200 text-center drop-shadow-lg">
         Quiz by Article Date
       </h1>
-      <form className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-blue-100 dark:border-slate-700 p-6 flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-blue-100 dark:border-slate-700 p-6 flex flex-col gap-6">
         <div>
           <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Date</label>
           <input
@@ -80,9 +91,8 @@ export default function QuizByDate() {
         <button
           type="submit"
           className="w-full mt-2 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          disabled
         >
-          Start Quiz (Coming Soon)
+          Start Quiz
         </button>
       </form>
     </div>
