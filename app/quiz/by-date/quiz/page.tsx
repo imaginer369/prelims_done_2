@@ -132,7 +132,6 @@ function QuizByDateQuizInner() {
               <button
                 className="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                 onClick={handleNext}
-                disabled={answers[q.question_id] == null}
               >
                 Next
               </button>
@@ -140,7 +139,6 @@ function QuizByDateQuizInner() {
               <button
                 className="px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold"
                 onClick={handleSubmit}
-                disabled={answers[q.question_id] == null}
               >
                 Submit
               </button>
