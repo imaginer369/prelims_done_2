@@ -58,7 +58,12 @@ function ExplanationInner() {
       });
   }, [searchParams]);
 
-  if (loading) return <div className="flex justify-center items-center min-h-[60vh] text-lg">Loading explanations...</div>;
+if (loading) return (
+  <div className="flex flex-col justify-center items-center min-h-[60vh]">
+    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 dark:border-blue-300 mb-6"></div>
+    <div className="text-lg text-blue-700 dark:text-blue-200 font-semibold tracking-wide">Loading explanations...</div>
+  </div>
+);
   if (error) return <div className="text-red-500 font-semibold text-lg py-8">{error}</div>;
   if (!questions.length) return <div className="text-gray-500 text-lg py-8">No questions found for the selected criteria.</div>;
 
