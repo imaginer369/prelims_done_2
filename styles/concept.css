@@ -10,6 +10,12 @@
   padding-bottom: 2.5rem;
 }
 
+@media (prefers-color-scheme: dark) {
+  .concept-bg {
+    background: linear-gradient(120deg, #0f172a 0%, #1e293b 60%, #334155 100%);
+  }
+}
+
 .concept-decor {
   pointer-events: none;
   position: absolute;
@@ -68,6 +74,14 @@
   animation: fade-in 0.7s cubic-bezier(.4,0,.2,1);
   backdrop-filter: blur(1.5px);
   box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  .concept-section {
+    background: rgba(30,41,59,0.98);
+    border: 1.5px solid #334155;
+    box-shadow: 0 4px 32px 0 rgba(30,41,59,0.18), 0 1.5px 0 0 #334155;
+  }
 }
 @media (max-width: 400px) {
   .concept-section {
@@ -137,6 +151,17 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+@media (prefers-color-scheme: dark) {
+  .concept-title {
+    color: #bae6fd;
+    background: linear-gradient(90deg, #60a5fa 0%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 8px rgba(30,41,59,0.18);
+  }
+}
 @media (max-width: 400px) {
   .concept-title {
     font-size: 1rem;
@@ -190,6 +215,15 @@
   line-height: 1.6;
   transition: box-shadow 0.2s;
   word-break: break-word;
+}
+
+@media (prefers-color-scheme: dark) {
+  .concept-markdown {
+    background: rgba(30,41,59,0.99);
+    border: 1.5px solid #334155;
+    color: #f1f5f9;
+    box-shadow: 0 2px 16px 0 rgba(30,41,59,0.13);
+  }
 }
 @media (max-width: 400px) {
   .concept-markdown {
