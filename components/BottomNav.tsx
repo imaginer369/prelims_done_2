@@ -7,10 +7,17 @@ export default function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 z-50 shadow-lg">
       <div className="flex justify-around items-center py-2">
-        <Link href="/news" className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600">
+        <button
+          className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600 focus:outline-none"
+          onClick={() => {
+            if (window.location.pathname === "/") return;
+            window.location.href = "/";
+          }}
+          type="button"
+        >
           <NewspaperIcon className="h-6 w-6 mb-1" />
           News
-        </Link>
+        </button>
         <Link href="/quiz" className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600">
           <AcademicCapIcon className="h-6 w-6 mb-1" />
           Quiz
