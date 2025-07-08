@@ -86,6 +86,17 @@ function QuizByDateQuizInner() {
             <div className="text-5xl font-extrabold text-green-600 dark:text-green-300 mb-2 text-center">{score} / {questions.length}</div>
             <div className="text-lg text-gray-700 dark:text-gray-200 text-center">Well done!</div>
           </div>
+          <button
+            className="mt-2 px-6 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-lg shadow"
+            onClick={() => {
+              if (!searchParams) return;
+              const params = new URLSearchParams(searchParams.toString());
+              params.set("answers", encodeURIComponent(JSON.stringify(answers)));
+              window.location.href = `/quiz/by-date/quiz/explanation?${params.toString()}`;
+            }}
+          >
+            Explanation
+          </button>
         </div>
       ) : null}
       {!submitted && (

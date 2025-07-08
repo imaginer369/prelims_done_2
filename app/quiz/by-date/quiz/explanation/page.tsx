@@ -1,0 +1,97 @@
+"use client";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+
+function ExplanationInner() {
+  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [answers, setAnswers] = useState<{ [question_id: number]: number | null }>({});
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!searchParams) return;
+    const date = searchParams.get("date");
+    const numQuestions = searchParams.get("numQuestions");
+    const difficulty = searchParams.get("difficulty");
+    const topic = searchParams.get("topic");
+    const answersParam = searchParams.get("answers");
+    let parsedAnswers: { [question_id: number]: number | null } = {};
+    if (answersParam) {
+      try {
+        parsedAnswers = JSON.parse(decodeURIComponent(answersParam));
+      } catch {}
+    }
+    setAnswers(parsedAnswers);
+    if (!date) return;
+    setLoading(true);
+    fetch(`/api/quiz/by-date?date=${encodeURIComponent(date)}&numQuestions=${encodeURIComponent(numQuestions || "10")}&difficulty=${encodeURIComponent(difficulty || "Mix")}&topic=${encodeURIComponent(topic || "All")}`)
+      .then(res => res.json())
+      .then(data => {
+        setQuestions(data.questions || []);
+        setError("");
+        setLoading(false);
+      })
+      .catch(err => {
+        setError("Failed to fetch questions");
+        setLoading(false);
+      });
+  }, [searchParams]);
+
+  if (loading) return <div className="flex justify-center items-center min-h-[60vh] text-lg">Loading explanations...</div>;
+  if (error) return <div className="text-red-500 font-semibold text-lg py-8">{error}</div>;
+  if (!questions.length) return <div className="text-gray-500 text-lg py-8">No questions found for the selected criteria.</div>;
+
+  return (
+    <div className="max-w-2xl mx-auto py-8 px-2">
+      <h1 className="text-2xl font-bold mb-6 text-blue-700 dark:text-blue-200 text-center">Quiz Explanations</h1>
+      <ol className="space-y-8">
+        {questions.map((q, idx) => {
+          const userSelected = answers[q.question_id];
+          const correctOption = q.options.find((o: any) => o.is_correct)?.option_id;
+          return (
+            <li key={q.question_id} className="bg-white dark:bg-slate-900 rounded-xl shadow p-6 border border-blue-100 dark:border-slate-700">
+              <div className="font-semibold mb-3">Q{idx + 1}. {q.text}</div>
+              <ul className="space-y-2 mb-3">
+                {q.options.map((opt: any) => {
+                  let optionClass = "";
+                  if (userSelected === opt.option_id && userSelected !== correctOption) {
+                    optionClass = "bg-red-100 dark:bg-red-900 border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 font-bold";
+                  } else if (opt.option_id === correctOption) {
+                    optionClass = "bg-green-100 dark:bg-green-900 border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 font-bold";
+                  } else {
+                    optionClass = "";
+                  }
+                  return (
+                    <li key={opt.option_id} className={`flex flex-col border rounded-lg px-3 py-2 mb-1 ${optionClass}`}>
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          name={`q_${q.question_id}_explanation`}
+                          id={`opt_${opt.option_id}_explanation`}
+                          checked={userSelected === opt.option_id}
+                          readOnly
+                          disabled
+                        />
+                        <label htmlFor={`opt_${opt.option_id}_explanation`} className="ml-2">{opt.option_text}</label>
+                      </div>
+                      <div className="text-xs text-gray-600 dark:text-gray-300 mt-1">{opt.explanation}</div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+export default function ExplanationPage() {
+  return (
+    <Suspense>
+      <ExplanationInner />
+    </Suspense>
+  );
+}
