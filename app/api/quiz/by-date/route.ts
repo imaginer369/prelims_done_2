@@ -13,11 +13,28 @@ export async function GET(req: NextRequest) {
   const difficultyCode = difficultyMap[difficulty as keyof typeof difficultyMap];
   const topicCode = topicMap[topic as keyof typeof topicMap];
 
-  // Build Supabase query
+  // Build Supabase query: join quiz_questions with options, filter by date, topic, difficulty
   let query = supabase
     .from("quiz_questions")
-    .select("*, options:options(*)")
-    .eq("date", date);
+    .select(`
+      question_id,
+      article_id,
+      concept_id,
+      date,
+      text,
+      topic,
+      difficulty,
+      options:options(
+        option_id,
+        question_id,
+        option_text,
+        is_correct,
+        explanation
+      )
+    `)
+    .gte("date", date + "T00:00:00")
+    .lt("date", date + "T23:59:59.999")
+  ;
 
   if (difficultyCode !== null && difficultyCode !== undefined) {
     query = query.eq("difficulty", difficultyCode);
@@ -38,9 +55,6 @@ export async function GET(req: NextRequest) {
   if (questions.length > numQuestions) {
     questions = questions.sort(() => Math.random() - 0.5).slice(0, numQuestions);
   }
-
-  // Log for diagnosis
-  console.log("Quiz API: returning", questions.length, "questions for", { date, numQuestions, difficulty, topic });
 
   return new Response(JSON.stringify({ questions }), { status: 200 });
 }
