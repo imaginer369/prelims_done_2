@@ -27,15 +27,12 @@ export default function QuizTimer({ totalSeconds, secondsLeft, onTimeUp, isRunni
   const percent = secondsLeft / totalSeconds;
   let textColor = "text-blue-700 dark:text-blue-200";
   let bgColor = "bg-white/80 dark:bg-slate-900/80";
-  let blink = false;
   if (percent <= 0.1) {
     textColor = "text-white";
     bgColor = "bg-red-600 animate-blink";
-    blink = true;
   } else if (percent <= 0.3) {
     textColor = "text-white";
     bgColor = "bg-yellow-400 animate-blink";
-    blink = true;
   }
 
   // Format mm:ss
