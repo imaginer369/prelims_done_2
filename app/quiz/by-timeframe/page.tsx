@@ -27,6 +27,7 @@ const topics = [
 
 const difficulties = ["Mix", "Easy", "Medium", "Hard", "Super Hard"];
 
+export default function QuizByTimeframe() {
   const [timeframe, setTimeframe] = useState("1w");
   const [numQuestions, setNumQuestions] = useState(10);
   const [difficulty, setDifficulty] = useState("Mix");

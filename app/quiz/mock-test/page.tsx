@@ -15,6 +15,7 @@ const topics = [
 
 const difficulties = ["Mix", "Easy", "Medium", "Hard", "Super Hard"];
 
+export default function QuizMockTest() {
   const [numQuestions, setNumQuestions] = useState(100);
   const [difficulty, setDifficulty] = useState("Mix");
   const [topic, setTopic] = useState("All");
