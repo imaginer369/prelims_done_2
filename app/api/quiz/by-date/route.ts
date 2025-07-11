@@ -13,14 +13,14 @@ export async function GET(req: NextRequest) {
   const difficultyCode = difficultyMap[difficulty as keyof typeof difficultyMap];
   const topicCode = topicMap[topic as keyof typeof topicMap];
 
-  // Build Supabase query: join quiz_questions with options, filter by date, topic, difficulty
+  // Build Supabase query: join quiz_questions with options, filter by question_date, topic, difficulty
   let query = supabase
     .from("quiz_questions")
     .select(`
       question_id,
       article_id,
       concept_id,
-      date,
+      question_date,
       text,
       topic,
       difficulty,
@@ -32,8 +32,8 @@ export async function GET(req: NextRequest) {
         explanation
       )
     `)
-    .gte("date", date + "T00:00:00")
-    .lt("date", date + "T23:59:59.999")
+    .gte("question_date", date + "T00:00:00")
+    .lt("question_date", date + "T23:59:59.999")
   ;
 
   if (difficultyCode !== null && difficultyCode !== undefined) {
