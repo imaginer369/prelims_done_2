@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import QuizSelectionForm from "@/components/Quiz/QuizSelectionForm";
 
 const timeframes = [
   { label: "Last 1 week", value: "1w" },
@@ -26,11 +27,11 @@ const topics = [
 
 const difficulties = ["Mix", "Easy", "Medium", "Hard", "Super Hard"];
 
-export default function QuizByTimeframe() {
   const [timeframe, setTimeframe] = useState("1w");
   const [numQuestions, setNumQuestions] = useState(10);
   const [difficulty, setDifficulty] = useState("Mix");
   const [topic, setTopic] = useState("All");
+  const [timeLimit, setTimeLimit] = useState(600); // default 10 minutes
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,70 +40,28 @@ export default function QuizByTimeframe() {
       numQuestions: numQuestions.toString(),
       difficulty,
       topic,
+      timeLimit: timeLimit.toString(),
     });
     window.location.href = `/quiz/by-timeframe/quiz?${params.toString()}`;
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] py-10 px-2">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-blue-700 dark:text-blue-200 text-center drop-shadow-lg">
-        Quiz by Timeframe
-      </h1>
-      <form onSubmit={handleSubmit} className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-blue-100 dark:border-slate-700 p-6 flex flex-col gap-6">
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Timeframe</label>
-          <select
-            className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={timeframe}
-            onChange={e => setTimeframe(e.target.value)}
-          >
-            {timeframes.map(tf => (
-              <option key={tf.value} value={tf.value}>{tf.label}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Number of Questions</label>
-          <input
-            type="number"
-            min={1}
-            max={100}
-            className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={numQuestions}
-            onChange={e => setNumQuestions(Number(e.target.value))}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Difficulty</label>
-          <select
-            className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={difficulty}
-            onChange={e => setDifficulty(e.target.value)}
-          >
-            {difficulties.map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-200">Topic</label>
-          <select
-            className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={topic}
-            onChange={e => setTopic(e.target.value)}
-          >
-            {topics.map(t => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="w-full mt-2 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          Start Quiz
-        </button>
-      </form>
-    </div>
+    <QuizSelectionForm
+      title="Quiz by Timeframe"
+      showTimeframe={true}
+      timeframe={timeframe}
+      setTimeframe={setTimeframe}
+      numQuestions={numQuestions}
+      setNumQuestions={setNumQuestions}
+      difficulty={difficulty}
+      setDifficulty={setDifficulty}
+      topic={topic}
+      setTopic={setTopic}
+      topics={topics}
+      difficulties={difficulties}
+      onSubmit={handleSubmit}
+      timeLimit={timeLimit}
+      setTimeLimit={setTimeLimit}
+    />
   );
 }
