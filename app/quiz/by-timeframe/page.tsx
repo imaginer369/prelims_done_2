@@ -2,17 +2,6 @@
 import { useState } from "react";
 import QuizSelectionForm from "@/components/Quiz/QuizSelectionForm";
 
-const timeframes = [
-  { label: "Last 1 week", value: "1w" },
-  { label: "Last 2 weeks", value: "2w" },
-  { label: "Last 1 month", value: "1m" },
-  { label: "Last 2 months", value: "2m" },
-  { label: "Last 4 months", value: "4m" },
-  { label: "Last 6 months", value: "6m" },
-  { label: "Last 9 months", value: "9m" },
-  { label: "Last 1 year", value: "1y" },
-  { label: "Last 2 years", value: "2y" },
-];
 
 const topics = [
   "All",
