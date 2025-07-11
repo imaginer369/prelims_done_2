@@ -23,9 +23,9 @@ export default function BottomNav() {
           <AcademicCapIcon className="h-6 w-6 mb-1" />
           Quiz
         </Link>
-        <Link href="/articles-by-date" className={`flex flex-col items-center text-xs ${pathname === "/articles-by-date" ? "text-yellow-600 dark:text-yellow-300 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-yellow-600"}`}>
+        <Link href="/article-nav" className={`flex flex-col items-center text-xs ${pathname === "/article-nav" ? "text-yellow-600 dark:text-yellow-300 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-yellow-600"}`}>
           <CalendarDaysIcon className="h-6 w-6 mb-1" />
-          By Date
+          Article Nav
         </Link>
         <Link href="/login" className={`flex flex-col items-center text-xs ${pathname === "/login" ? "text-blue-600 dark:text-blue-400 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-blue-600"}`}>
           <UserCircleIcon className="h-6 w-6 mb-1" />
