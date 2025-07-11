@@ -9,7 +9,6 @@ interface QuizTimerProps {
 
 export default function QuizTimer({ totalSeconds, secondsLeft, onTimeUp, isRunning }: QuizTimerProps) {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const prevRunning = useRef(isRunning);
 
   useEffect(() => {
     if (isRunning && secondsLeft > 0) {
