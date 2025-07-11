@@ -23,15 +23,19 @@ export default function QuizTimer({ totalSeconds, secondsLeft, onTimeUp, isRunni
     };
   }, [isRunning, secondsLeft, onTimeUp]);
 
-  // Color logic
+  // Color and background logic
   const percent = secondsLeft / totalSeconds;
-  let color = "text-blue-700 dark:text-blue-200";
+  let textColor = "text-blue-700 dark:text-blue-200";
+  let bgColor = "bg-white/80 dark:bg-slate-900/80";
   let blink = false;
   if (percent <= 0.1) {
-    color = "text-red-600 dark:text-red-400 animate-pulse";
+    textColor = "text-white";
+    bgColor = "bg-red-600 animate-blink";
     blink = true;
   } else if (percent <= 0.3) {
-    color = "text-yellow-500 dark:text-yellow-300";
+    textColor = "text-white";
+    bgColor = "bg-yellow-400 animate-blink";
+    blink = true;
   }
 
   // Format mm:ss
@@ -39,8 +43,8 @@ export default function QuizTimer({ totalSeconds, secondsLeft, onTimeUp, isRunni
   const ss = (secondsLeft % 60).toString().padStart(2, "0");
 
   return (
-    <div className={`fixed top-6 right-8 z-50 flex items-center gap-2 bg-white/80 dark:bg-slate-900/80 px-4 py-2 rounded-xl shadow-lg border border-blue-200 dark:border-slate-700 font-mono text-xl font-bold ${color} ${blink ? "animate-blink" : ""}`}
-      style={{ transition: "color 0.3s" }}
+    <div className={`fixed top-6 right-8 z-50 flex items-center gap-2 ${bgColor} px-4 py-2 rounded-xl shadow-lg border border-blue-200 dark:border-slate-700 font-mono text-xl font-bold ${textColor}`}
+      style={{ transition: "background 0.3s, color 0.3s" }}
       aria-label="Quiz timer"
     >
       <span role="img" aria-label="timer">⏰</span>
