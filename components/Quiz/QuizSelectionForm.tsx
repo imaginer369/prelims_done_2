@@ -39,7 +39,9 @@ export default function QuizSelectionForm({
   topics,
   difficulties,
   onSubmit,
-  getYesterday
+  getYesterday,
+  timeLimit,
+  setTimeLimit
 }: QuizSelectionFormProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] py-10 px-2">
