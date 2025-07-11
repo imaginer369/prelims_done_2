@@ -25,6 +25,7 @@ export default function QuizByDate() {
   const [numQuestions, setNumQuestions] = useState(10);
   const [difficulty, setDifficulty] = useState("Mix");
   const [topic, setTopic] = useState("All");
+  const [timeLimit, setTimeLimit] = useState(600); // default 10 minutes
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +34,7 @@ export default function QuizByDate() {
       numQuestions: numQuestions.toString(),
       difficulty,
       topic,
+      timeLimit: timeLimit.toString(),
     });
     window.location.href = `/quiz/by-date/quiz?${params.toString()}`;
   };
@@ -53,6 +55,8 @@ export default function QuizByDate() {
       difficulties={difficulties}
       onSubmit={handleSubmit}
       getYesterday={getYesterday}
+      timeLimit={timeLimit}
+      setTimeLimit={setTimeLimit}
     />
   );
 }
