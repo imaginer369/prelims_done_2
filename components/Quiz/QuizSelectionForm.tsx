@@ -95,12 +95,16 @@ export default function QuizSelectionForm({
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                min={10}
-                max={7200}
+                min={0}
+                max={599}
                 step={1}
                 className="w-24 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-right font-mono text-lg"
                 value={Math.floor(timeLimit / 60)}
-                onChange={e => setTimeLimit(Math.max(10, Number(e.target.value) * 60 + (timeLimit % 60)))}
+                onChange={e => {
+                  const min = Number(e.target.value);
+                  const sec = timeLimit % 60;
+                  setTimeLimit(min * 60 + sec);
+                }}
                 aria-label="Minutes"
               />
               <span className="text-gray-500 dark:text-gray-300">min</span>
@@ -111,12 +115,22 @@ export default function QuizSelectionForm({
                 step={1}
                 className="w-20 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-right font-mono text-lg"
                 value={timeLimit % 60}
-                onChange={e => setTimeLimit(Math.max(10, (Math.floor(timeLimit / 60) * 60) + Number(e.target.value)))}
+                onChange={e => {
+                  const sec = Number(e.target.value);
+                  const min = Math.floor(timeLimit / 60);
+                  setTimeLimit(min * 60 + sec);
+                }}
                 aria-label="Seconds"
               />
               <span className="text-gray-500 dark:text-gray-300">sec</span>
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum 10 seconds. Default: 10 minutes.</div>
+            {timeLimit < 10 && (
+              <div className="text-xs text-red-500 mt-1">Please give time more than 10 seconds.</div>
+            )}
+            {timeLimit > 36000 && (
+              <div className="text-xs text-red-500 mt-1">Please give time below 10 hours.</div>
+            )}
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum 10 seconds. Maximum 10 hours. Default: 10 minutes.</div>
           </div>
         </div>
         <div>
