@@ -1,6 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
+import QuizTimer from "@/components/Quiz/QuizTimer";
 import { marked } from "marked";
 
 interface Option {
@@ -29,12 +30,16 @@ function MockTestQuizInner() {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<{ [question_id: number]: number | null }>({});
   const [submitted, setSubmitted] = useState(false);
+  const [timerStarted, setTimerStarted] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(0);
+  const totalSecondsRef = useRef(0);
 
   useEffect(() => {
     if (!searchParams) return;
     const numQuestions = searchParams.get("numQuestions");
     const difficulty = searchParams.get("difficulty");
     const topic = searchParams.get("topic");
+    const timeLimit = Number(searchParams.get("timeLimit")) || 600;
     setLoading(true);
     fetch(`/api/quiz/mock-test?numQuestions=${encodeURIComponent(numQuestions || "100")}&difficulty=${encodeURIComponent(difficulty || "Mix")}&topic=${encodeURIComponent(topic || "All")}`)
       .then(res => res.json())
@@ -42,6 +47,9 @@ function MockTestQuizInner() {
         setQuestions((data.questions as Question[]) || []);
         setError("");
         setLoading(false);
+        setSecondsLeft(timeLimit);
+        totalSecondsRef.current = timeLimit;
+        setTimerStarted(true);
       })
       .catch(err => {
         setError("Failed to fetch questions");
@@ -49,6 +57,16 @@ function MockTestQuizInner() {
         console.error(err);
       });
   }, [searchParams]);
+  // Timer effect
+  useEffect(() => {
+    if (!timerStarted || submitted) return;
+    if (secondsLeft <= 0) {
+      setSubmitted(true);
+      return;
+    }
+    const t = setTimeout(() => setSecondsLeft(s => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [timerStarted, secondsLeft, submitted]);
 
   if (loading) return (
     <div className="flex flex-col justify-center items-center min-h-[60vh]">
@@ -79,7 +97,15 @@ function MockTestQuizInner() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-2">
+    <div className="max-w-2xl mx-auto py-8 px-2 relative">
+      {!submitted && timerStarted && secondsLeft > 0 && (
+        <QuizTimer
+          totalSeconds={totalSecondsRef.current}
+          secondsLeft={secondsLeft}
+          onTimeUp={() => setSubmitted(true)}
+          isRunning={!submitted}
+        />
+      )}
       <h1 className="text-2xl font-bold mb-6 text-blue-700 dark:text-blue-200 text-center">Mock Test</h1>
       {submitted ? (
         <div className="flex flex-col items-center justify-center mb-8">
