@@ -38,12 +38,6 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
   const router = useRouter();
   const conceptSectionRef = useRef<HTMLDivElement>(null);
 
-  // Scroll concept section into view after showing full content
-  useEffect(() => {
-    if (showFullContent && conceptSectionRef.current) {
-      conceptSectionRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, [showFullContent]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-white dark:bg-slate-900 py-8 px-2 animate-fade-in">
