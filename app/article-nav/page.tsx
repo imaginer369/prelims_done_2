@@ -12,16 +12,7 @@ const timeframes = [
   { label: "1 month", value: "1m" },
 ];
 
-const categories = [
-  "All",
-  "Current Events of National and International Importance",
-  "History of India and Indian National Movement",
-  "Indian and World Geography - Physical, Social, Economic Geography of India and the World",
-  "Indian Polity and Governance - Constitution, Political System, Panchayati Raj, Public Policy, Rights Issues, etc.",
-  "Economic and Social Development - Sustainable Development, Poverty, Inclusion, Demographics, Social Sector Initiatives, etc.",
-  "General Issues on Environmental Ecology, Bio-diversity and Climate Change - that do not require subject specialization",
-  "General Science"
-];
+// Category options removed (no category column yet)
 
 
 export default function ArticleNavPage() {
