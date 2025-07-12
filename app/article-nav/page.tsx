@@ -23,6 +23,8 @@ const categories = [
   "General Science"
 ];
 
+
+export default function ArticleNavPage() {
   const [date, setDate] = useState("");
   const [timeframe, setTimeframe] = useState("");
   const [category, setCategory] = useState("All");
