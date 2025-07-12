@@ -31,8 +31,14 @@ export default function ArticleNavPage() {
     setDate("");
   };
 
+  const [error, setError] = useState("");
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    if (!date && !timeframe) {
+      setError("Please select either date or timeframe.");
+      return;
+    }
     const params = new URLSearchParams();
     if (date) params.append("date", date);
     if (timeframe) params.append("timeframe", timeframe);
@@ -43,6 +49,9 @@ export default function ArticleNavPage() {
     <div className={styles.container}>
       <h1 className={styles.title}>Article Navigation</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
+        {error && (
+          <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>
+        )}
         <div className={styles.inputGroup}>
           <label className={styles.label}>Select Date</label>
           <input
