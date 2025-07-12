@@ -1,5 +1,5 @@
 "use client";
-import { useState, Suspense, lazy, useRef, useEffect } from "react";
+import { useState, Suspense, lazy, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 // import ConceptCard from "./ConceptCard";
