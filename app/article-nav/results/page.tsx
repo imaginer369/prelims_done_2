@@ -2,7 +2,10 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
 import NewsCarousel from "../../../components/NewsCarousel";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface Concept {
   id: number;
@@ -20,7 +23,7 @@ interface Article {
   concepts?: Concept[];
 }
 
-export default function ArticleResultsPage() {
+function ArticleResultsContent() {
   const params = useSearchParams();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,5 +60,13 @@ export default function ArticleResultsPage() {
     <div className="mt-10 m-0 p-0">
       <NewsCarousel articles={articles} />
     </div>
+  );
+}
+
+export default function ArticleResultsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ArticleResultsContent />
+    </Suspense>
   );
 }
