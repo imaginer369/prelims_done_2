@@ -23,7 +23,7 @@ export default function BottomNav() {
           <AcademicCapIcon className="h-6 w-6 mb-1" />
           Quiz
         </Link>
-        <Link href="/article-nav" className={`flex flex-col items-center text-xs ${pathname === "/article-nav" ? "text-yellow-600 dark:text-yellow-300 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-yellow-600"}`}>
+        <Link href="/article-nav" className={`flex flex-col items-center text-xs ${pathname === "/article-nav" ? "text-blue-600 dark:text-blue-400 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-blue-600"}`}>
           <CalendarDaysIcon className="h-6 w-6 mb-1" />
           Article Nav
         </Link>
