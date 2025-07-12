@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import styles from "../article-nav.module.css";
 
 interface Article {
@@ -11,7 +11,8 @@ interface Article {
   summary: string;
 }
 
-export default function ArticleResultsPage() {
+
+function ArticleResultsContent() {
   const params = useSearchParams();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,5 +56,13 @@ export default function ArticleResultsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ArticleResultsPage() {
+  return (
+    <Suspense fallback={<div className={styles.container}><div>Loading...</div></div>}>
+      <ArticleResultsContent />
+    </Suspense>
   );
 }
