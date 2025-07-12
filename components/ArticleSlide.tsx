@@ -37,6 +37,7 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
   const hasSummary = article.quick_summary.trim().length > 0;
   const router = useRouter();
   const conceptSectionRef = useRef<HTMLDivElement>(null);
+  const lastConceptRef = useRef<HTMLButtonElement>(null);
 
 
   return (
@@ -89,7 +90,16 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
                 </div>
                 <div className="flex justify-center mt-2">
                   <button
-                    onClick={() => setShowFullContent(true)}
+                    onClick={() => {
+                      setShowFullContent(true);
+                      setTimeout(() => {
+                        if (lastConceptRef.current) {
+                          const rect = lastConceptRef.current.getBoundingClientRect();
+                          const scrollY = window.scrollY + rect.top - window.innerHeight / 2;
+                          window.scrollTo({ top: scrollY, behavior: "smooth" });
+                        }
+                      }, 400); // Wait for content to render
+                    }}
                     className="px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-full shadow-lg transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 text-lg tracking-wide animate-fade-in dark:bg-gradient-to-r dark:from-blue-700 dark:to-cyan-700"
                     style={{
                       background: 'linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)',
@@ -120,9 +130,10 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
                       Important Concepts for Paper
                     </h2>
                     <ul className="flex flex-col gap-3 w-full bg-white dark:bg-slate-900">
-                      {article.concepts.map((concept) => (
+                      {article.concepts.map((concept, idx) => (
                         <li key={concept.id}>
                           <button
+                            ref={article.concepts && idx === article.concepts.length - 1 ? lastConceptRef : undefined}
                             className="w-full text-left px-5 py-3 rounded-xl bg-blue-50 dark:bg-slate-800 hover:bg-blue-100 dark:hover:bg-slate-700 border border-blue-200 dark:border-slate-700 font-semibold text-blue-700 dark:text-blue-200 transition shadow group flex items-center gap-3"
                             onClick={() => router.push(`/concept/${concept.id}?articleId=${article.id}`)}
                           >
