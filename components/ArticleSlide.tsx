@@ -56,7 +56,7 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
         <div className="relative z-10 bg-white dark:bg-slate-900 backdrop-blur-xl rounded-3xl flex flex-col">
           {/* Article Image with 16:9 ratio */}
           {article.image_url && (
-            <div className="relative w-full aspect-video bg-white dark:bg-slate-900 overflow-hidden">
+            <div className="sticky top-0 z-20 relative w-full aspect-video bg-white dark:bg-slate-900 overflow-hidden">
               <Image
                 src={article.image_url}
                 alt={article.title}
