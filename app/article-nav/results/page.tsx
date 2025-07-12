@@ -25,7 +25,7 @@ function ArticleResultsContent() {
       if (params && params.get("timeframe")) query.timeframe = params.get("timeframe")!;
       if (params && params.get("category")) query.category = params.get("category")!;
       const search = new URLSearchParams(query).toString();
-      const res = await fetch(`/api/articles?${search}`);
+      const res = await fetch(`/api/article-nav?${search}`);
       const data = await res.json();
       setArticles(data.articles || []);
       setLoading(false);
