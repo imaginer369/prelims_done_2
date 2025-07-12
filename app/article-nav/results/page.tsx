@@ -20,9 +20,9 @@ export default function ArticleResultsPage() {
     const fetchArticles = async () => {
       setLoading(true);
       const query: Record<string, string> = {};
-      if (params.get("date")) query.date = params.get("date")!;
-      if (params.get("timeframe")) query.timeframe = params.get("timeframe")!;
-      if (params.get("category")) query.category = params.get("category")!;
+      if (params && params.get("date")) query.date = params.get("date")!;
+      if (params && params.get("timeframe")) query.timeframe = params.get("timeframe")!;
+      if (params && params.get("category")) query.category = params.get("category")!;
       const search = new URLSearchParams(query).toString();
       const res = await fetch(`/api/articles?${search}`);
       const data = await res.json();
@@ -31,7 +31,7 @@ export default function ArticleResultsPage() {
     };
     fetchArticles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.toString()]);
+  }, [params?.toString()]);
 
   return (
     <div className={styles.container}>
