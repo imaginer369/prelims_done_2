@@ -24,7 +24,9 @@ export async function GET(req: NextRequest) {
     if (timeframe.endsWith('w')) days = parseInt(timeframe) * 7;
     if (timeframe.endsWith('m')) days = parseInt(timeframe) * 30;
     const cutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-    query = query.gte('published_at', cutoff.toISOString());
+    // Format cutoff to 'YYYY-MM-DD HH:MM:SS' (no milliseconds, no Z)
+    const cutoffStr = cutoff.toISOString().slice(0, 19).replace('T', ' ');
+    query = query.gte('published_at', cutoffStr);
   }
   if (category && category !== 'All') {
     query = query.eq('category', category);
