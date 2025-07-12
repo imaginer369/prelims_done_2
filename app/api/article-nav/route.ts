@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '../../../../lib/supabaseClient';
+import { supabase } from '../../../lib/supabaseClient';
 import { NextRequest } from 'next/server';
 
 // /api/article-nav GET endpoint for Article Nav filtering
