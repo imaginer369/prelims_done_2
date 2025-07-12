@@ -41,8 +41,6 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-white dark:bg-slate-900 py-8 px-2 animate-fade-in">
-      {/* Reduce the gap between header and article card */}
-      <div className="h-4 sm:h-6" />
       <div className="w-full max-w-3xl relative rounded-3xl overflow-hidden flex flex-col shadow-2xl border border-gray-200 dark:border-slate-800 group bg-white dark:bg-slate-900">
         {/* Animated gradient border */}
         <div className="absolute inset-0 z-0 pointer-events-none rounded-3xl border-4 border-transparent group-hover:border-blue-400 group-focus-within:border-blue-500 transition-all duration-500 animate-gradient-border" style={{background: 'linear-gradient(120deg, #3b82f6 0%, #6366f1 50%, #06b6d4 100%)', opacity: 0.18}} />
