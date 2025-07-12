@@ -142,6 +142,7 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
                           </button>
                         </li>
                       ))}
+                      <div className="h-40" />
                     </ul>
                   </section>
                 )}
