@@ -63,7 +63,7 @@ export default function ArticleSlide({ article, forceFullContent = false }: Arti
             </div>
           )}
           {/* Article Content */}
-          <div className="flex-1 flex flex-col p-6 sm:p-10 overflow-y-auto">
+          <div className="flex-1 flex flex-col p-6 sm:p-10 overflow-y-auto max-h-[80vh]">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-blue-200 mb-2 leading-tight drop-shadow-sm">
               {article.title}
             </h1>
