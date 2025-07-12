@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./article-nav.module.css";
+// import styles from "./article-nav.module.css"; // CSS file removed
 
 const timeframes = [
   { label: "2 days", value: "2d" },
@@ -46,26 +46,26 @@ export default function ArticleNavPage() {
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Article Navigation</h1>
-      <form className={styles.form} onSubmit={handleSubmit}>
+    <div className="max-w-xl mx-auto mt-8 p-6 bg-white dark:bg-slate-900 rounded-lg shadow">
+      <h1 className="text-2xl font-bold mb-6 text-center text-blue-700 dark:text-blue-300">Article Navigation</h1>
+      <form className="space-y-6" onSubmit={handleSubmit}>
         {error && (
-          <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>
+          <div className="text-red-600 mb-4 text-center">{error}</div>
         )}
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>Select Date</label>
+        <div>
+          <label className="block mb-2 font-medium text-gray-700 dark:text-gray-200">Select Date</label>
           <input
             type="date"
-            className={styles.input}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-slate-800 dark:text-gray-100"
             value={date}
             onChange={handleDateChange}
             disabled={!!timeframe}
           />
         </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>Or Select Timeframe</label>
+        <div>
+          <label className="block mb-2 font-medium text-gray-700 dark:text-gray-200">Or Select Timeframe</label>
           <select
-            className={styles.input}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-slate-800 dark:text-gray-100"
             value={timeframe}
             onChange={handleTimeframeChange}
             disabled={!!date}
@@ -76,8 +76,7 @@ export default function ArticleNavPage() {
             ))}
           </select>
         </div>
-        {/* Category selection removed */}
-        <button type="submit" className={styles.submitButton}>Show Articles</button>
+        <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">Show Articles</button>
       </form>
     </div>
   );
