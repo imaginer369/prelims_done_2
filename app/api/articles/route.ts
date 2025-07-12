@@ -13,9 +13,10 @@ export async function GET(req: NextRequest) {
     .select('id, title, quick_summary, content, image_url, published_at, category')
     .order('published_at', { ascending: false });
 
-  if (date) {
+  // Only one of date or timeframe should be used for filtering
+  if (date && !timeframe) {
     query = query.gte('published_at', date + 'T00:00:00').lt('published_at', date + 'T23:59:59.999');
-  } else if (timeframe) {
+  } else if (timeframe && !date) {
     // Parse timeframe (e.g., 2d, 1w, 1m)
     const now = new Date();
     let days = 0;
