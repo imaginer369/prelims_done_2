@@ -1,11 +1,28 @@
+
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import NewsCarousel from "../../../components/NewsCarousel";
 
+interface Concept {
+  id: number;
+  name: string;
+  info: string;
+}
+
+interface Article {
+  id: number;
+  title: string;
+  quick_summary: string;
+  content: string;
+  image_url: string;
+  published_at: string;
+  concepts?: Concept[];
+}
+
 export default function ArticleResultsPage() {
   const params = useSearchParams();
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,7 +36,7 @@ export default function ArticleResultsPage() {
       const data = await res.json();
       // Fetch concepts for each article, just like homepage
       const articlesWithConcepts = await Promise.all(
-        (data.articles || []).map(async (article: any) => {
+        (data.articles || []).map(async (article: Article) => {
           const conceptsRes = await fetch(`/api/concepts?article_id=${article.id}`);
           const conceptsData = await conceptsRes.json();
           return { ...article, concepts: Array.isArray(conceptsData) ? conceptsData : [] };
