@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
-import styles from "../article-nav.module.css";
+// import styles from "../article-nav.module.css"; // CSS file removed
 
 interface Article {
   id: string;
@@ -35,22 +35,22 @@ function ArticleResultsContent() {
   }, [params?.toString()]);
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Articles</h1>
+    <div className="max-w-2xl mx-auto mt-8 p-6 bg-white dark:bg-slate-900 rounded-lg shadow">
+      <h1 className="text-2xl font-bold mb-6 text-center text-blue-700 dark:text-blue-300">Articles</h1>
       {loading ? (
         <div>Loading...</div>
       ) : articles.length === 0 ? (
         <div>No articles found for the selected options.</div>
       ) : (
-        <div className={styles.articlesList}>
+        <div className="space-y-6">
           {articles.map(article => (
-            <div key={article.id} className={styles.articleCard}>
-              <div className={styles.articleHeader}>
-                <span className={styles.articleCategory}>{article.category}</span>
-                <span className={styles.articleDate}>{article.date}</span>
+            <div key={article.id} className="border rounded-lg p-4 bg-gray-50 dark:bg-slate-800">
+              <div className="flex justify-between text-xs mb-2 text-gray-500 dark:text-gray-400">
+                <span>{article.category}</span>
+                <span>{article.date}</span>
               </div>
-              <h2 className={styles.articleTitle}>{article.title}</h2>
-              <p className={styles.articleSummary}>{article.summary}</p>
+              <h2 className="text-lg font-semibold mb-1 text-blue-800 dark:text-blue-200">{article.title}</h2>
+              <p className="text-gray-700 dark:text-gray-200">{article.summary}</p>
             </div>
           ))}
         </div>
@@ -61,7 +61,7 @@ function ArticleResultsContent() {
 
 export default function ArticleResultsPage() {
   return (
-    <Suspense fallback={<div className={styles.container}><div>Loading...</div></div>}>
+    <Suspense fallback={<div className="max-w-2xl mx-auto mt-8 p-6 bg-white dark:bg-slate-900 rounded-lg shadow"><div>Loading...</div></div>}>
       <ArticleResultsContent />
     </Suspense>
   );
