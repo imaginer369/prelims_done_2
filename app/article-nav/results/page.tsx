@@ -1,10 +1,8 @@
 
-"use client";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
-import NewsCarousel from "../../../components/NewsCarousel";
+"use client";
 import { Suspense, useState, useEffect } from "react";
+import NewsCarousel from "../../../components/NewsCarousel";
 import { useSearchParams } from "next/navigation";
 
 interface Concept {
