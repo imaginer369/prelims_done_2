@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./article-nav.module.css";
 
 const timeframes = [
@@ -22,10 +23,10 @@ const categories = [
   "General Science"
 ];
 
-export default function ArticleNavPage() {
   const [date, setDate] = useState("");
   const [timeframe, setTimeframe] = useState("");
   const [category, setCategory] = useState("All");
+  const router = useRouter();
 
   // Mutually exclusive logic
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,10 +38,19 @@ export default function ArticleNavPage() {
     setDate("");
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (date) params.append("date", date);
+    if (timeframe) params.append("timeframe", timeframe);
+    if (category) params.append("category", category);
+    router.push(`/article-nav/results?${params.toString()}`);
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Article Navigation</h1>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputGroup}>
           <label className={styles.label}>Select Date</label>
           <input
@@ -77,6 +87,7 @@ export default function ArticleNavPage() {
             ))}
           </select>
         </div>
+        <button type="submit" className={styles.submitButton}>Show Articles</button>
       </form>
     </div>
   );
