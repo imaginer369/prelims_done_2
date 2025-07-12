@@ -7,10 +7,10 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const date = searchParams.get("date");
   const timeframe = searchParams.get("timeframe");
-  const category = searchParams.get("category");
+  // const category = searchParams.get("category");
   let query = supabase
     .from('articles')
-    .select('id, title, quick_summary, content, image_url, published_at, category')
+    .select('id, title, quick_summary, content, image_url, published_at')
     .order('published_at', { ascending: false });
 
   // Only one of date or timeframe should be used for filtering
@@ -28,9 +28,7 @@ export async function GET(req: NextRequest) {
     const cutoffStr = cutoff.toISOString().slice(0, 19).replace('T', ' ');
     query = query.gte('published_at', cutoffStr);
   }
-  if (category && category !== 'All') {
-    query = query.eq('category', category);
-  }
+  // Category filter removed (no category column yet)
 
   const { data, error } = await query;
   if (error) {

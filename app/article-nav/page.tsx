@@ -27,7 +27,7 @@ const categories = [
 export default function ArticleNavPage() {
   const [date, setDate] = useState("");
   const [timeframe, setTimeframe] = useState("");
-  const [category, setCategory] = useState("All");
+  // Category selection removed
   const router = useRouter();
 
   // Mutually exclusive logic
@@ -45,7 +45,6 @@ export default function ArticleNavPage() {
     const params = new URLSearchParams();
     if (date) params.append("date", date);
     if (timeframe) params.append("timeframe", timeframe);
-    if (category) params.append("category", category);
     router.push(`/article-nav/results?${params.toString()}`);
   };
 
@@ -77,18 +76,7 @@ export default function ArticleNavPage() {
             ))}
           </select>
         </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>Select Category</label>
-          <select
-            className={styles.input}
-            value={category}
-            onChange={e => setCategory(e.target.value)}
-          >
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
+        {/* Category selection removed */}
         <button type="submit" className={styles.submitButton}>Show Articles</button>
       </form>
     </div>
