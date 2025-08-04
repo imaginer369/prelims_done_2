@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
   const topicCode = topicMap[topic as keyof typeof topicMap];
 
   // Build Supabase query: join quiz_questions with options, filter by question_date, topic, difficulty
+  // Fetch a larger sample for randomization
   let query = supabase
     .from("quiz_questions")
     .select(`
@@ -34,8 +35,7 @@ export async function GET(req: NextRequest) {
     `)
     .gte("question_date", date + "T00:00:00")
     .lt("question_date", date + "T23:59:59.999")
-    .order('random')
-    .limit(numQuestions);
+    .limit(numQuestions * 5);
 
   if (difficultyCode !== null && difficultyCode !== undefined) {
     query = query.eq("difficulty", difficultyCode);
@@ -51,6 +51,11 @@ export async function GET(req: NextRequest) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 
-  const questions = data || [];
+  // Shuffle and limit to numQuestions
+  let questions = data || [];
+  if (questions.length > numQuestions) {
+    questions = questions.sort(() => Math.random() - 0.5).slice(0, numQuestions);
+  }
+
   return new Response(JSON.stringify({ questions }), { status: 200 });
 }
