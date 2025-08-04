@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     `)
     .gte("question_date", date + "T00:00:00")
     .lt("question_date", date + "T23:59:59.999")
-    .order('RANDOM()')
+    .order('random')
     .limit(numQuestions);
 
   if (difficultyCode !== null && difficultyCode !== undefined) {
