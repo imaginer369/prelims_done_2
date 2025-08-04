@@ -39,7 +39,9 @@ export async function GET(req: NextRequest) {
       )
     `)
     .gte("question_date", startStr)
-    .lte("question_date", endStr);
+    .lte("question_date", endStr)
+    .order('RANDOM()')
+    .limit(numQuestions);
 
   if (difficultyCode !== null && difficultyCode !== undefined) {
     query = query.eq("difficulty", difficultyCode);
@@ -48,18 +50,13 @@ export async function GET(req: NextRequest) {
     query = query.eq("topic", topicCode);
   }
 
-  // Fetch all matching questions
+  // Fetch only the needed number of random questions
   const { data, error } = await query;
   if (error) {
     console.error("Supabase error:", error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 
-  // Shuffle and limit to numQuestions
-  let questions = data || [];
-  if (questions.length > numQuestions) {
-    questions = questions.sort(() => Math.random() - 0.5).slice(0, numQuestions);
-  }
-
+  const questions = data || [];
   return new Response(JSON.stringify({ questions }), { status: 200 });
 }
