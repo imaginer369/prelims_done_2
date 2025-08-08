@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const topicCode = topicMap[topic as keyof typeof topicMap];
 
   // Use Supabase RPC to fetch random questions by date
-  const { data, error } = await supabase.rpc('get_random_questions_by_date', {
+  const { data, error } = await supabase.rpc('private.get_random_questions_by_date', {
     date,
     num_questions: numQuestions,
     difficulty: difficultyCode ?? null,
