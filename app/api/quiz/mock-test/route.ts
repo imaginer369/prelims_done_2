@@ -21,9 +21,10 @@ export async function GET(req: NextRequest) {
 
   // Use Supabase RPC to fetch random questions for mock test
   const { data, error } = await supabase.rpc('get_random_questions_mock_test', {
-    start_date: startStr,
-    end_date: endStr,
+    
+    //end_date: endStr,
     num_questions: numQuestions,
+    start_date: startStr,
     difficulty: difficultyCode ?? null,
     topic: topicCode ?? null
   });
