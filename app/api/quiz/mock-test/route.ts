@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 import { supabase } from "@/lib/supabaseClient";
 import { difficultyMap, topicMap } from "@/lib/quizMappings";
 
@@ -8,11 +9,13 @@ export async function GET(req: NextRequest) {
   const difficulty = searchParams.get("difficulty");
   const topic = searchParams.get("topic");
 
-  // Get user ID from Supabase Auth
-  const authHeader = req.headers.get("authorization");
+  // Get user ID from Supabase Auth session cookie
   let user_id = null;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    const access_token = authHeader.replace("Bearer ", "");
+  const cookieStore = await cookies();
+  const access_token = cookieStore.get && typeof cookieStore.get === 'function'
+    ? cookieStore.get("sb-access-token")?.value
+    : undefined;
+  if (access_token) {
     const { data: { user }, error: userError } = await supabase.auth.getUser(access_token);
     if (userError) {
       console.error("Supabase Auth error:", userError);
