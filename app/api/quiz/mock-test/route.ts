@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { cookies } from "next/headers";
 import { supabase } from "@/lib/supabaseClient";
 import { difficultyMap, topicMap } from "@/lib/quizMappings";
 
