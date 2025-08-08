@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   const startDate = new Date();
   startDate.setFullYear(endDate.getFullYear() - 3);
   const startStr = startDate.toISOString().slice(0, 10) + "T00:00:00";
-  const endStr = endDate.toISOString().slice(0, 10) + "T23:59:59.999";
+  //const endStr = endDate.toISOString().slice(0, 10) + "T23:59:59.999";
 
   // Use Supabase RPC to fetch random questions for mock test
   const { data, error } = await supabase.rpc('get_random_questions_mock_test', {
