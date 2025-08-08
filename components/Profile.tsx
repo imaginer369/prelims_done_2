@@ -1,16 +1,18 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import type { User } from "@supabase/supabase-js";
 
 export default function Profile() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getUser = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (!error && data?.user) {
-        setUser(data.user);
+        setUser(data.user as User);
       }
       setLoading(false);
     };
