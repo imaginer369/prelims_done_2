@@ -19,49 +19,17 @@ export async function GET(req: NextRequest) {
   const startStr = startDate.toISOString().slice(0, 10) + "T00:00:00";
   const endStr = endDate.toISOString().slice(0, 10) + "T23:59:59.999";
 
-  // Build Supabase query: join quiz_questions with options, filter by question_date, topic, difficulty
-  // Fetch a larger sample for randomization
-  let query = supabase
-    .from("quiz_questions")
-    .select(`
-      question_id,
-      article_id,
-      concept_id,
-      question_date,
-      text,
-      topic,
-      difficulty,
-      options:options(
-        option_id,
-        question_id,
-        option_text,
-        is_correct,
-        explanation
-      )
-    `)
-    .gte("question_date", startStr)
-    .lte("question_date", endStr)
-    .limit(numQuestions * 5);
-
-  if (difficultyCode !== null && difficultyCode !== undefined) {
-    query = query.eq("difficulty", difficultyCode);
-  }
-  if (topicCode !== null && topicCode !== undefined) {
-    query = query.eq("topic", topicCode);
-  }
-
-  // Fetch only the needed number of random questions
-  const { data, error } = await query;
+  // Use Supabase RPC to fetch random questions for mock test
+  const { data, error } = await supabase.rpc('get_random_questions_mock_test', {
+    start_date: startStr,
+    end_date: endStr,
+    num_questions: numQuestions,
+    difficulty: difficultyCode ?? null,
+    topic: topicCode ?? null
+  });
   if (error) {
-    console.error("Supabase error:", error);
+    console.error("Supabase RPC error:", error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
-
-  // Shuffle and limit to numQuestions
-  let questions = data || [];
-  if (questions.length > numQuestions) {
-    questions = questions.sort(() => Math.random() - 0.5).slice(0, numQuestions);
-  }
-
-  return new Response(JSON.stringify({ questions }), { status: 200 });
+  return new Response(JSON.stringify({ questions: data }), { status: 200 });
 }
