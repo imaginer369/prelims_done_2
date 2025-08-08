@@ -8,6 +8,22 @@ export async function GET(req: NextRequest) {
   const difficulty = searchParams.get("difficulty");
   const topic = searchParams.get("topic");
 
+  // Get user ID from Supabase Auth
+  const authHeader = req.headers.get("authorization");
+  let user_id = null;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const access_token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: userError } = await supabase.auth.getUser(access_token);
+    if (userError) {
+      console.error("Supabase Auth error:", userError);
+      return new Response(JSON.stringify({ error: userError.message }), { status: 401 });
+    }
+    user_id = user?.id;
+  }
+  if (!user_id) {
+    return new Response(JSON.stringify({ error: "Unauthorized: No user found" }), { status: 401 });
+  }
+
   // Map difficulty and topic to int codes (null means any)
   const difficultyCode = difficultyMap[difficulty as keyof typeof difficultyMap];
   const topicCode = topicMap[topic as keyof typeof topicMap];
@@ -19,14 +35,14 @@ export async function GET(req: NextRequest) {
   const startStr = startDate.toISOString().slice(0, 10) + "T00:00:00";
   //const endStr = endDate.toISOString().slice(0, 10) + "T23:59:59.999";
 
-  // Use Supabase RPC to fetch random questions for mock test
+  // Use Supabase RPC to fetch random questions for mock test, passing user_id
   const { data, error } = await supabase.rpc('get_random_questions_mock_test', {
-    
     //end_date: endStr,
     num_questions: numQuestions,
     start_date: startStr,
     difficulty: difficultyCode ?? null,
-    topic: topicCode ?? null
+    topic: topicCode ?? null,
+    user_id
   });
   if (error) {
     console.error("Supabase RPC error:", error);
