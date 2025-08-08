@@ -9,19 +9,18 @@ export async function GET(req: NextRequest) {
   const difficulty = searchParams.get("difficulty");
   const topic = searchParams.get("topic");
 
-  // Get user ID from Supabase Auth session cookie
+  // Get user ID from Supabase Auth
+  const authHeader = req.headers.get("authorization");
   let user_id = null;
-  const cookieStore = await cookies();
-  const access_token = cookieStore.get && typeof cookieStore.get === 'function'
-    ? cookieStore.get("sb-access-token")?.value
-    : undefined;
-  if (access_token) {
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const access_token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: userError } = await supabase.auth.getUser(access_token);
     if (userError) {
       console.error("Supabase Auth error:", userError);
       return new Response(JSON.stringify({ error: userError.message }), { status: 401 });
     }
     user_id = user?.id;
+    console.log("User ID from mock-test route:", user_id);
   }
   if (!user_id) {
     return new Response(JSON.stringify({ error: "Unauthorized: No user found" }), { status: 401 });
