@@ -6,7 +6,12 @@ import { difficultyMap, topicMap } from "@/lib/quizMappings";
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const date = searchParams.get("date");
-  const numQuestions = parseInt(searchParams.get("numQuestions") || "10", 10);
+  // get the next date from the date variable
+  const currentDate = new Date(date);
+  currentDate.setDate(currentDate.getDate() + 1); // add one day
+  const nextDate = currentDate.toISOString().split("T")[0];
+
+  const n = parseInt(searchParams.get("numQuestions") || "10", 10);
   const difficulty = searchParams.get("difficulty");
   const topic = searchParams.get("topic");
 
@@ -15,9 +20,10 @@ export async function GET(req: NextRequest) {
   const topicCode = topicMap[topic as keyof typeof topicMap];
 
   // Use Supabase RPC to fetch random questions by date
-  const { data, error } = await supabase.rpc('get_random_questions_by_date', {
-    date,
-    num_questions: numQuestions,
+  const { data, error } = await supabase.rpc('get_random_questions_with_options', {
+    n: n,
+    from_date: date,
+    to_date: nextDate,
     difficulty: difficultyCode ?? null,
     topic: topicCode ?? null
   });
