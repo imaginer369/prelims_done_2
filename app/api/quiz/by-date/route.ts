@@ -22,23 +22,32 @@ export async function GET(req: NextRequest) {
   const difficultyCode = difficultyMap[difficulty as keyof typeof difficultyMap];
   const topicCode = topicMap[topic as keyof typeof topicMap];
 
-  // New strategy for 'Mix' difficulty
-  if (difficulty === 'Mix') {
-    const difficulties = [0, 1, 2, 3]; // Easy, Medium, Hard, Super Hard
-    const baseCount = Math.floor(n / difficulties.length);
-  const remainder = n % difficulties.length;
-  const counts = difficulties.map((_, i) => baseCount + (i < remainder ? 1 : 0));
-  let allQuestions: unknown[] = [];
-    for (let i = 0; i < difficulties.length; i++) {
+  // New strategy for 'Mix' difficulty or 'All' topic
+  if (difficulty === 'Mix' || topic === 'All') {
+    // Determine which axis to split on
+    let axis: 'difficulty' | 'topic';
+    let values: number[];
+    if (difficulty === 'Mix') {
+      axis = 'difficulty';
+      values = [0, 1, 2, 3]; // Easy, Medium, Hard, Super Hard
+    } else {
+      axis = 'topic';
+      values = [0, 1, 2, 3, 4, 5, 6]; // All topics
+    }
+    const baseCount = Math.floor(n / values.length);
+    const remainder = n % values.length;
+    const counts = values.map((_, i) => baseCount + (i < remainder ? 1 : 0));
+    let allQuestions: unknown[] = [];
+    for (let i = 0; i < values.length; i++) {
       if (counts[i] === 0) continue;
       const rpcParams = {
         n: counts[i],
         from_date: date,
         to_date: nextDate,
-        difficulty: difficulties[i],
-        topic: topicCode
+        difficulty: axis === 'difficulty' ? values[i] : difficultyCode,
+        topic: axis === 'topic' ? values[i] : topicCode
       };
-      console.log(`Supabase RPC parameters for difficulty ${difficulties[i]}:`, rpcParams);
+      console.log(`Supabase RPC parameters for ${axis} ${values[i]}:`, rpcParams);
       const { data, error } = await supabase.rpc('get_random_questions_with_options', rpcParams);
       if (error) {
         console.error("Supabase RPC error:", error);
