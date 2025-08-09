@@ -81,6 +81,7 @@ if (loading) return (
   if (!questions.length) return <div className="text-gray-500 text-lg py-8">No questions found for the selected criteria.</div>;
 
   const q = questions[current];
+  console.log(q.text)
   const handleOption = (option_id: number) => {
     if (submitted) return;
     setAnswers(a => ({ ...a, [q.question_id]: option_id }));
