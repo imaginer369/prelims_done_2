@@ -22,20 +22,52 @@ export async function GET(req: NextRequest) {
   const difficultyCode = difficultyMap[difficulty as keyof typeof difficultyMap];
   const topicCode = topicMap[topic as keyof typeof topicMap];
 
-  // Use Supabase RPC to fetch random questions by date
-  const rpcParams = {
-    n: n,
-    from_date: date,
-    to_date: nextDate,
-    difficulty: difficultyCode,
-    topic: topicCode
-  };
-  console.log("Supabase RPC parameters:", rpcParams);
-  const { data, error } = await supabase.rpc('get_random_questions_with_options', rpcParams);
-  if (error) {
-    console.error("Supabase RPC error:", error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  // New strategy for 'Mix' difficulty
+  if (difficulty === 'Mix') {
+    const difficulties = [0, 1, 2, 3]; // Easy, Medium, Hard, Super Hard
+    const baseCount = Math.floor(n / difficulties.length);
+    let remainder = n % difficulties.length;
+    const counts = difficulties.map((_, i) => baseCount + (i < remainder ? 1 : 0));
+    let allQuestions: any[] = [];
+    for (let i = 0; i < difficulties.length; i++) {
+      if (counts[i] === 0) continue;
+      const rpcParams = {
+        n: counts[i],
+        from_date: date,
+        to_date: nextDate,
+        difficulty: difficulties[i],
+        topic: topicCode
+      };
+      console.log(`Supabase RPC parameters for difficulty ${difficulties[i]}:`, rpcParams);
+      const { data, error } = await supabase.rpc('get_random_questions_with_options', rpcParams);
+      if (error) {
+        console.error("Supabase RPC error:", error);
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      }
+      allQuestions = allQuestions.concat(data || []);
+    }
+    // Shuffle the combined questions
+    for (let i = allQuestions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+    }
+    return new Response(JSON.stringify({ questions: allQuestions }), { status: 200 });
+  } else {
+    // Use Supabase RPC to fetch random questions by date
+    const rpcParams = {
+      n: n,
+      from_date: date,
+      to_date: nextDate,
+      difficulty: difficultyCode,
+      topic: topicCode
+    };
+    console.log("Supabase RPC parameters:", rpcParams);
+    const { data, error } = await supabase.rpc('get_random_questions_with_options', rpcParams);
+    if (error) {
+      console.error("Supabase RPC error:", error);
+      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    }
+    console.log("Received data from Supabase RPC:", data);
+    return new Response(JSON.stringify({ questions: data }), { status: 200 });
   }
-  console.log("Received data from Supabase RPC:", data);
-  return new Response(JSON.stringify({ questions: data }), { status: 200 });
 }
