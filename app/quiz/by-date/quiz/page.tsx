@@ -46,7 +46,6 @@ function QuizByDateQuizInner() {
     fetch(`/api/quiz/by-date?date=${encodeURIComponent(date)}&numQuestions=${encodeURIComponent(numQuestions || "10")}&difficulty=${encodeURIComponent(difficulty || "Mix")}&topic=${encodeURIComponent(topic || "All")}`)
       .then(res => res.json())
       .then(data => {
-        console.log('Fetched quiz data:', data);
         setQuestions((data.questions as Question[]) || []);
         setError("");
         setLoading(false);
@@ -81,7 +80,7 @@ if (loading) return (
   if (!questions.length) return <div className="text-gray-500 text-lg py-8">No questions found for the selected criteria.</div>;
 
   const q = questions[current];
-  console.log(q.text)
+  console.log(q)
   const handleOption = (option_id: number) => {
     if (submitted) return;
     setAnswers(a => ({ ...a, [q.question_id]: option_id }));
