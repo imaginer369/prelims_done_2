@@ -34,5 +34,6 @@ export async function GET(req: NextRequest) {
     console.error("Supabase RPC error:", error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
+  console.log("Received data from Supabase RPC:", data);
   return new Response(JSON.stringify({ questions: data }), { status: 200 });
 }
