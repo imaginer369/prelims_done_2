@@ -27,8 +27,8 @@ export async function GET(req: NextRequest) {
     n: n,
     from_date: date,
     to_date: nextDate,
-    difficulty: difficultyCode ?? null,
-    topic: topicCode ?? null
+    difficulty: difficultyCode,
+    topic: topicCode 
   });
   if (error) {
     console.error("Supabase RPC error:", error);
