@@ -7,6 +7,9 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const date = searchParams.get("date");
   // get the next date from the date variable
+  if (!date) {
+  return new Response(JSON.stringify({ error: "Missing date parameter" }), { status: 400 });
+  }
   const currentDate = new Date(date);
   currentDate.setDate(currentDate.getDate() + 1); // add one day
   const nextDate = currentDate.toISOString().split("T")[0];
