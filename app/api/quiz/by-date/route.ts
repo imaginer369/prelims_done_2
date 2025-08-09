@@ -26,9 +26,9 @@ export async function GET(req: NextRequest) {
   if (difficulty === 'Mix') {
     const difficulties = [0, 1, 2, 3]; // Easy, Medium, Hard, Super Hard
     const baseCount = Math.floor(n / difficulties.length);
-    let remainder = n % difficulties.length;
-    const counts = difficulties.map((_, i) => baseCount + (i < remainder ? 1 : 0));
-    let allQuestions: any[] = [];
+  const remainder = n % difficulties.length;
+  const counts = difficulties.map((_, i) => baseCount + (i < remainder ? 1 : 0));
+  let allQuestions: unknown[] = [];
     for (let i = 0; i < difficulties.length; i++) {
       if (counts[i] === 0) continue;
       const rpcParams = {
