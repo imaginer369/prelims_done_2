@@ -23,13 +23,15 @@ export async function GET(req: NextRequest) {
   const topicCode = topicMap[topic as keyof typeof topicMap];
 
   // Use Supabase RPC to fetch random questions by date
-  const { data, error } = await supabase.rpc('get_random_questions_with_options', {
+  const rpcParams = {
     n: n,
     from_date: date,
     to_date: nextDate,
     difficulty: difficultyCode,
-    topic: topicCode 
-  });
+    topic: topicCode
+  };
+  console.log("Supabase RPC parameters:", rpcParams);
+  const { data, error } = await supabase.rpc('get_random_questions_with_options', rpcParams);
   if (error) {
     console.error("Supabase RPC error:", error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
