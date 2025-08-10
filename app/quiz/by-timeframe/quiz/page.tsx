@@ -33,6 +33,46 @@ function QuizByTimeframeQuizInner() {
   const [secondsLeft, setSecondsLeft] = useState(0);
   const totalSecondsRef = useRef(0);
 
+  const q = questions[current];
+  const handleOption = (option_id: number) => {
+    if (submitted) return;
+    setAnswers(a => ({ ...a, [q.question_id]: option_id }));
+  };
+  const handlePrev = () => setCurrent(c => Math.max(0, c - 1));
+  const handleNext = () => setCurrent(c => Math.min(questions.length - 1, c + 1));
+  const handleSubmit = () => setSubmitted(true);
+  // Keyboard shortcuts: 1-4 for options, arrows for navigation
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (submitted) return;
+      // 1-4 keys for options
+      if (e.key >= '1' && e.key <= '4') {
+        const idx = parseInt(e.key, 10) - 1;
+        if (q.options && q.options[idx]) {
+          handleOption(q.options[idx].option_id);
+        }
+      }
+      // Arrow keys for navigation
+      if (e.key === 'ArrowRight') {
+        handleNext();
+      } else if (e.key === 'ArrowLeft') {
+        handlePrev();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [q, submitted]);
+  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [error, setError] = useState("");
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState<{ [question_id: number]: number | null }>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [timerStarted, setTimerStarted] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(0);
+  const totalSecondsRef = useRef(0);
+
   useEffect(() => {
     if (!searchParams) return;
     const timeframe = searchParams.get("timeframe");
