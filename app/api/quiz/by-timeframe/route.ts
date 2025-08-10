@@ -149,7 +149,7 @@ export async function GET(req: NextRequest) {
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
-  const mappedQuestions = (data || []).map((q: any) => ({
+  const mappedQuestions = (data || []).map((q: Question) => ({
     question_id: (q as Question).question_id,
     article_id: (q as Question).article_id,
     concept_id: (q as Question).concept_id,
