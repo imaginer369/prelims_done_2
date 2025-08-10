@@ -1,5 +1,5 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { marked } from "marked";
 

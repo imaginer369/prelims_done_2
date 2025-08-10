@@ -45,21 +45,21 @@ function QuizByDateQuizInner() {
   const handleSubmit = () => setSubmitted(true);
   // Keyboard shortcuts: 1-4 for options, arrows for navigation
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
+  function handleKeyDown(_e: KeyboardEvent) {
       if (submitted) return;
       // 1-4 keys for options
-      if (e.key >= '1' && e.key <= '4') {
-        const idx = parseInt(e.key, 10) - 1;
-        if (q.options && q.options[idx]) {
-          handleOption(q.options[idx].option_id);
-        }
+    if (_e.key >= '1' && _e.key <= '4') {
+      const idx = parseInt(_e.key, 10) - 1;
+      if (q.options && q.options[idx]) {
+        handleOption(q.options[idx].option_id);
       }
-      // Arrow keys for navigation
-      if (e.key === 'ArrowRight') {
-        handleNext();
-      } else if (e.key === 'ArrowLeft') {
-        handlePrev();
-      }
+    }
+    // Arrow keys for navigation
+    if (_e.key === 'ArrowRight') {
+      handleNext();
+    } else if (_e.key === 'ArrowLeft') {
+      handlePrev();
+    }
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
