@@ -59,7 +59,17 @@ export async function GET(req: NextRequest) {
       const j = Math.floor(Math.random() * (i + 1));
       [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
     }
-    return new Response(JSON.stringify({ questions: allQuestions }), { status: 200 });
+    const mappedQuestions = allQuestions.map((q: any) => ({
+      question_id: q.question_id,
+      article_id: q.article_id,
+      concept_id: q.concept_id,
+      question_date: q.question_date,
+      question_text: q.question_text,
+      topic: q.topic,
+      difficulty: q.difficulty,
+      options: q.options
+    }));
+    return new Response(JSON.stringify({ questions: mappedQuestions }), { status: 200 });
   }
   // New strategy for 'Mix' difficulty or 'All' topic (but not both)
   if (difficulty === 'Mix' || topic === 'All') {
@@ -97,7 +107,17 @@ export async function GET(req: NextRequest) {
       const j = Math.floor(Math.random() * (i + 1));
       [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
     }
-    return new Response(JSON.stringify({ questions: allQuestions }), { status: 200 });
+    const mappedQuestions = allQuestions.map((q: any) => ({
+      question_id: q.question_id,
+      article_id: q.article_id,
+      concept_id: q.concept_id,
+      question_date: q.question_date,
+      question_text: q.question_text,
+      topic: q.topic,
+      difficulty: q.difficulty,
+      options: q.options
+    }));
+    return new Response(JSON.stringify({ questions: mappedQuestions }), { status: 200 });
   } else {
     // Use Supabase RPC to fetch random questions by date
     const rpcParams = {
@@ -114,6 +134,16 @@ export async function GET(req: NextRequest) {
       return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
     console.log("Received data from Supabase RPC:", data);
-    return new Response(JSON.stringify({ questions: data }), { status: 200 });
+    const mappedQuestions = (data || []).map((q: any) => ({
+      question_id: q.question_id,
+      article_id: q.article_id,
+      concept_id: q.concept_id,
+      question_date: q.question_date,
+      question_text: q.question_text,
+      topic: q.topic,
+      difficulty: q.difficulty,
+      options: q.options
+    }));
+    return new Response(JSON.stringify({ questions: mappedQuestions }), { status: 200 });
   }
 }
