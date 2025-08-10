@@ -150,7 +150,7 @@ function QuizByTimeframeQuizInner() {
                   "byTimeframeQuizData",
                   JSON.stringify({ questions, answers })
                 );
-              } catch (e) {
+              } catch {
                 // Optionally handle quota/storage errors
               }
               if (!searchParams) return;
