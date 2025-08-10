@@ -1,3 +1,14 @@
+// Define the Question type for API mapping
+type Question = {
+  question_id: number;
+  article_id: number;
+  concept_id: number;
+  question_date: string;
+  question_text: string;
+  topic: number;
+  difficulty: number;
+  options: unknown[];
+};
 import { NextRequest } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 import { difficultyMap, topicMap } from "@/lib/quizMappings";
@@ -68,15 +79,15 @@ export async function GET(req: NextRequest) {
       [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
     }
     // Map fields to match the required Question interface
-    const mappedQuestions = allQuestions.map((q: any) => ({
-      question_id: q.question_id,
-      article_id: q.article_id,
-      concept_id: q.concept_id,
-      question_date: q.question_date,
-      question_text: q.question_text,
-      topic: q.topic,
-      difficulty: q.difficulty,
-      options: q.options
+    const mappedQuestions = allQuestions.map(q => ({
+      question_id: (q as Question).question_id,
+      article_id: (q as Question).article_id,
+      concept_id: (q as Question).concept_id,
+      question_date: (q as Question).question_date,
+      question_text: (q as Question).question_text,
+      topic: (q as Question).topic,
+      difficulty: (q as Question).difficulty,
+      options: (q as Question).options
     }));
     return new Response(JSON.stringify({ questions: mappedQuestions }), { status: 200 });
   }
@@ -114,15 +125,15 @@ export async function GET(req: NextRequest) {
       const j = Math.floor(Math.random() * (i + 1));
       [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
     }
-    const mappedQuestions = allQuestions.map((q: any) => ({
-      question_id: q.question_id,
-      article_id: q.article_id,
-      concept_id: q.concept_id,
-      question_date: q.question_date,
-      question_text: q.question_text,
-      topic: q.topic,
-      difficulty: q.difficulty,
-      options: q.options
+    const mappedQuestions = allQuestions.map(q => ({
+      question_id: (q as Question).question_id,
+      article_id: (q as Question).article_id,
+      concept_id: (q as Question).concept_id,
+      question_date: (q as Question).question_date,
+      question_text: (q as Question).question_text,
+      topic: (q as Question).topic,
+      difficulty: (q as Question).difficulty,
+      options: (q as Question).options
     }));
     return new Response(JSON.stringify({ questions: mappedQuestions }), { status: 200 });
   }
@@ -138,15 +149,15 @@ export async function GET(req: NextRequest) {
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
-    const mappedQuestions = (data || []).map((q: any) => ({
-      question_id: q.question_id,
-      article_id: q.article_id,
-      concept_id: q.concept_id,
-      question_date: q.question_date,
-      question_text: q.question_text,
-      topic: q.topic,
-      difficulty: q.difficulty,
-      options: q.options
-    }));
-    return new Response(JSON.stringify({ questions: mappedQuestions }), { status: 200 });
+  const mappedQuestions = (data || []).map((q: any) => ({
+    question_id: (q as Question).question_id,
+    article_id: (q as Question).article_id,
+    concept_id: (q as Question).concept_id,
+    question_date: (q as Question).question_date,
+    question_text: (q as Question).question_text,
+    topic: (q as Question).topic,
+    difficulty: (q as Question).difficulty,
+    options: (q as Question).options
+  }));
+  return new Response(JSON.stringify({ questions: mappedQuestions }), { status: 200 });
 }
