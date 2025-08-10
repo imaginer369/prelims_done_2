@@ -24,48 +24,42 @@ interface Question {
 }
 
 function ExplanationInner() {
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [question_id: number]: number | null }>({});
   const [error, setError] = useState("");
   useEffect(() => {
-    if (!searchParams) return;
-    const date = searchParams.get("date");
-    const numQuestions = searchParams.get("numQuestions");
-    const difficulty = searchParams.get("difficulty");
-    const topic = searchParams.get("topic");
-    const answersParam = searchParams.get("answers");
-    let parsedAnswers: { [question_id: number]: number | null } = {};
-    if (answersParam) {
-      try {
-        parsedAnswers = JSON.parse(decodeURIComponent(answersParam));
-      } catch {}
-    }
-    setAnswers(parsedAnswers);
-    if (!date) return;
-    setLoading(true);
-    fetch(`/api/quiz/by-date?date=${encodeURIComponent(date)}&numQuestions=${encodeURIComponent(numQuestions || "10")}&difficulty=${encodeURIComponent(difficulty || "Mix")}&topic=${encodeURIComponent(topic || "All")}`)
-      .then((res) => res.json())
-      .then((data: { questions: Question[] }) => {
-        setQuestions(data.questions || []);
+    try {
+      const data = localStorage.getItem("byDateQuizData");
+      if (data) {
+        const parsed = JSON.parse(data);
+        setQuestions(parsed.questions || []);
+        setAnswers(parsed.answers || {});
+        localStorage.removeItem("byDateQuizData");
         setError("");
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to fetch questions");
-        setLoading(false);
-      });
-  }, [searchParams]);
+      } else {
+        setError("No quiz data found. Please complete a quiz first.");
+      }
+    } catch {
+      setError("Failed to load quiz data.");
+    }
+    setLoading(false);
+  }, []);
 
-if (loading) return (
-  <div className="flex flex-col justify-center items-center min-h-[60vh]">
-    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 dark:border-blue-300 mb-6"></div>
-    <div className="text-lg text-blue-700 dark:text-blue-200 font-semibold tracking-wide">Loading explanations...</div>
-  </div>
-);
-  if (error) return <div className="text-red-500 font-semibold text-lg py-8">{error}</div>;
-  if (!questions.length) return <div className="text-gray-500 text-lg py-8">No questions found for the selected criteria.</div>;
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 dark:border-blue-300 mb-6"></div>
+        <div className="text-lg text-blue-700 dark:text-blue-200 font-semibold tracking-wide">Loading explanations...</div>
+      </div>
+    );
+  }
+  if (error) {
+    return <div className="text-red-500 font-semibold text-lg py-8">{error}</div>;
+  }
+  if (!questions.length) {
+    return <div className="text-gray-500 text-lg py-8">No questions found for the selected criteria.</div>;
+  }
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-2">

@@ -144,9 +144,17 @@ function QuizByTimeframeQuizInner() {
           <button
             className="mt-2 px-6 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-lg shadow"
             onClick={() => {
+              // Save questions and answers to localStorage for explanation page
+              try {
+                localStorage.setItem(
+                  "byTimeframeQuizData",
+                  JSON.stringify({ questions, answers })
+                );
+              } catch (e) {
+                // Optionally handle quota/storage errors
+              }
               if (!searchParams) return;
               const params = new URLSearchParams(searchParams.toString());
-              params.set("answers", encodeURIComponent(JSON.stringify(answers)));
               window.location.href = `/quiz/by-timeframe/quiz/explanation?${params.toString()}`;
             }}
           >

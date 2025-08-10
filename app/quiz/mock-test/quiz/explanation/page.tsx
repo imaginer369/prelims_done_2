@@ -23,37 +23,28 @@ interface Question {
 }
 
 function ExplanationInner() {
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [question_id: number]: number | null }>({});
   const [error, setError] = useState("");
   useEffect(() => {
-    if (!searchParams) return;
-    const numQuestions = searchParams.get("numQuestions");
-    const difficulty = searchParams.get("difficulty");
-    const topic = searchParams.get("topic");
-    const answersParam = searchParams.get("answers");
-    let parsedAnswers: { [question_id: number]: number | null } = {};
-    if (answersParam) {
-      try {
-        parsedAnswers = JSON.parse(decodeURIComponent(answersParam));
-      } catch {}
-    }
-    setAnswers(parsedAnswers);
-    setLoading(true);
-    fetch(`/api/quiz/mock-test?numQuestions=${encodeURIComponent(numQuestions || "10")}&difficulty=${encodeURIComponent(difficulty || "Mix")}&topic=${encodeURIComponent(topic || "All")}`)
-      .then((res) => res.json())
-      .then((data: { questions: Question[] }) => {
-        setQuestions(data.questions || []);
+    // Load questions and answers from localStorage
+    try {
+      const data = localStorage.getItem("mockTestQuizData");
+      if (data) {
+        const parsed = JSON.parse(data);
+        setQuestions(parsed.questions || []);
+        setAnswers(parsed.answers || {});
+        localStorage.removeItem("mockTestQuizData"); // Clean up after use
         setError("");
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to fetch questions");
-        setLoading(false);
-      });
-  }, [searchParams]);
+      } else {
+        setError("No quiz data found. Please complete a quiz first.");
+      }
+    } catch {
+      setError("Failed to load quiz data.");
+    }
+    setLoading(false);
+  }, []);
 
   if (loading) return (
     <div className="flex flex-col justify-center items-center min-h-[60vh]">
