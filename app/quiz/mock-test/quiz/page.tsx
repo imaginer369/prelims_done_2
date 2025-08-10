@@ -44,6 +44,7 @@ function MockTestQuizInner() {
     fetch(`/api/quiz/mock-test?numQuestions=${encodeURIComponent(numQuestions || "100")}&difficulty=${encodeURIComponent(difficulty || "Mix")}&topic=${encodeURIComponent(topic || "All")}`)
       .then(res => res.json())
       .then(data => {
+        console.log("Fetched quiz data:", data);
         setQuestions((data.questions as Question[]) || []);
         setError("");
         setLoading(false);
