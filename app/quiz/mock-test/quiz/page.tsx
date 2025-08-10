@@ -23,6 +23,25 @@ interface Question {
 }
 
 function MockTestQuizInner() {
+  // State hooks
+  const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [error, setError] = useState("");
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState<{ [question_id: number]: number | null }>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [timerStarted, setTimerStarted] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(0);
+  const totalSecondsRef = useRef(0);
+  // Quiz logic
+  const q = questions[current];
+  const handleOption = (option_id: number) => {
+    if (submitted) return;
+    setAnswers(a => ({ ...a, [q.question_id]: option_id }));
+  };
+  const handlePrev = () => setCurrent(c => Math.max(0, c - 1));
+  const handleNext = () => setCurrent(c => Math.min(questions.length - 1, c + 1));
+  const handleSubmit = () => setSubmitted(true);
   // Keyboard shortcuts: 1-4 for options, arrows for navigation
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -45,15 +64,7 @@ function MockTestQuizInner() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [q, submitted]);
   const searchParams = useSearchParams();
-  const [loading, setLoading] = useState(true);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [error, setError] = useState("");
-  const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState<{ [question_id: number]: number | null }>({});
-  const [submitted, setSubmitted] = useState(false);
-  const [timerStarted, setTimerStarted] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(0);
-  const totalSecondsRef = useRef(0);
+  // ...existing code...
 
   useEffect(() => {
     if (!searchParams) return;
@@ -99,14 +110,7 @@ function MockTestQuizInner() {
   if (error) return <div className="text-red-500 font-semibold text-lg py-8">{error}</div>;
   if (!questions.length) return <div className="text-gray-500 text-lg py-8">No questions found for the selected criteria.</div>;
 
-  const q = questions[current];
-  const handleOption = (option_id: number) => {
-    if (submitted) return;
-    setAnswers(a => ({ ...a, [q.question_id]: option_id }));
-  };
-  const handlePrev = () => setCurrent(c => Math.max(0, c - 1));
-  const handleNext = () => setCurrent(c => Math.min(questions.length - 1, c + 1));
-  const handleSubmit = () => setSubmitted(true);
+  // ...existing code...
 
   // Score calculation
   let score = 0;
