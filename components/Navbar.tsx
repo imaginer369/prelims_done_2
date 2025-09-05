@@ -15,6 +15,9 @@ export default function Navbar() {
           <Link href="/quiz" className="hover:underline">
             Quiz
           </Link>
+          <Link href="/articles-by-date" className="hover:underline font-semibold text-yellow-300">
+            Articles by Date
+          </Link>
           <Link href="/login" className="hover:underline">
             Login
           </Link>

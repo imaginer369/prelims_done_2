@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase"; // adjust if your supabase client is elsewhere
+import { supabase } from "../lib/supabaseClient";
 
 type Concept = {
   id: string;
@@ -35,7 +35,8 @@ export default function ConceptTest({ articleId }: ConceptTestProps) {
         setError(error.message);
       } else {
         console.log("Concepts fetched:", data);
-        const extractedConcepts = data.map((entry) => entry.concept);
+        // Flatten the array if needed
+        const extractedConcepts = data.map((entry) => entry.concept).flat();
         setConcepts(extractedConcepts);
       }
     };

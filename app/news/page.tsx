@@ -1,11 +1,22 @@
 // app/news/page.tsx
-export default function News() {
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import BottomNavClientWrapper from "../../components/BottomNavClientWrapper";
+
+export default function NewsPage() {
+  const router = useRouter();
+  useEffect(() => {
+    // Redirect to homepage on mount
+    router.replace("/");
+  }, [router]);
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Latest News</h1>
-      <p className="text-gray-600">Stay updated with UPSC-relevant news.</p>
-      {/* Future enhancement: Render a list of news articles dynamically */}
-    </div>
+    <>
+      {/* Keep BottomNav visible even during redirect */}
+      <div className="min-h-screen flex flex-col justify-end">
+        <BottomNavClientWrapper />
+      </div>
+    </>
   );
 }
-

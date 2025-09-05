@@ -1,0 +1,275 @@
+
+.concept-bg {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--concept-bg-light);
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 2.5rem;
+}
+
+:root {
+  --concept-bg-light: linear-gradient(120deg, #e0e7ef 0%, #fff 60%, #bae6fd 100%);
+  --concept-section-bg-light: rgba(255,255,255,0.98);
+  --concept-section-border-light: #dbeafe;
+  --concept-section-shadow-light: 0 4px 24px 0 rgba(59,130,246,0.10), 0 1.5px 0 0 #dbeafe;
+  --concept-title-gradient-light: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+  --concept-title-color-light: #1d4ed8;
+  --concept-markdown-bg-light: rgba(255,255,255,0.99);
+  --concept-markdown-border-light: #dbeafe;
+  --concept-markdown-shadow-light: 0 2px 10px 0 rgba(59,130,246,0.08);
+  --concept-markdown-color-light: #1e293b;
+}
+
+.dark {
+  --concept-bg-light: linear-gradient(120deg, #0f172a 0%, #1e293b 60%, #334155 100%);
+  --concept-section-bg-light: rgba(30,41,59,0.98);
+  --concept-section-border-light: #334155;
+  --concept-section-shadow-light: 0 4px 32px 0 rgba(30,41,59,0.18), 0 1.5px 0 0 #334155;
+  --concept-title-gradient-light: linear-gradient(90deg, #60a5fa 0%, #22d3ee 100%);
+  --concept-title-color-light: #bae6fd;
+  --concept-markdown-bg-light: rgba(30,41,59,0.99);
+  --concept-markdown-border-light: #334155;
+  --concept-markdown-shadow-light: 0 2px 16px 0 rgba(30,41,59,0.13);
+  --concept-markdown-color-light: #f1f5f9;
+}
+
+
+
+
+.concept-decor {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.concept-decor .circle1 {
+  position: absolute;
+  top: -8rem;
+  left: -8rem;
+  width: 24rem;
+  height: 24rem;
+  background: #bfdbfe;
+  border-radius: 9999px;
+  opacity: 0.18;
+  filter: blur(48px);
+  animation: pulse 2.5s infinite alternate;
+}
+
+.concept-decor .circle2 {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20rem;
+  height: 20rem;
+  background: #a7f3d0;
+  border-radius: 9999px;
+  opacity: 0.18;
+  filter: blur(32px);
+  animation: pulse 3s infinite alternate-reverse;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.18; }
+  100% { opacity: 0.28; }
+}
+
+
+/* Responsive concept section */
+
+.concept-section {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  max-width: 48rem;
+  margin: 1.2rem auto 0 auto;
+  background: var(--concept-section-bg-light);
+  border-radius: 1.2rem;
+  box-shadow: var(--concept-section-shadow-light);
+  border: 1.5px solid var(--concept-section-border-light);
+  padding: 1.1rem 0.3rem 1.2rem 0.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fade-in 0.7s cubic-bezier(.4,0,.2,1);
+  backdrop-filter: blur(1.5px);
+  box-sizing: border-box;
+}
+
+  
+
+@media (max-width: 400px) {
+  .concept-section {
+    padding: 0.7rem 0.3rem 0.9rem 0.3rem;
+    border-radius: 0.7rem;
+    margin-top: 0.7rem;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+  }
+}
+@media (max-width: 600px) {
+  .concept-section {
+    margin-left: 0.7rem;
+    margin-right: 0.7rem;
+    width: calc(100vw - 1.4rem);
+  }
+}
+@media (max-width: 400px) {
+  .concept-section {
+    padding: 0.7rem 0.1rem 0.9rem 0.1rem;
+    border-radius: 0.7rem;
+    margin-top: 0.7rem;
+  }
+}
+
+@media (min-width: 480px) {
+  .concept-section {
+    padding: 2.5rem 2rem 2.2rem 2rem;
+    width: 92vw;
+  }
+}
+
+@media (min-width: 640px) {
+  .concept-section {
+    padding: 3.5rem 3rem 2.5rem 3rem;
+    width: 80vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .concept-section {
+    padding: 4rem 4rem 3rem 4rem;
+    width: 100%;
+    max-width: 48rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .concept-section {
+    padding: 3.5rem 3rem;
+  }
+}
+
+
+/* Responsive concept title font size */
+
+.concept-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--concept-title-color-light);
+  margin-bottom: 1.1rem;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(59,130,246,0.10);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  background: var(--concept-title-gradient-light);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
+
+@media (max-width: 400px) {
+  .concept-title {
+    font-size: 1rem;
+    margin-bottom: 0.7rem;
+  }
+}
+
+@media (min-width: 480px) {
+  .concept-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.7rem;
+  }
+}
+@media (min-width: 640px) {
+  .concept-title {
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .concept-title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 480px) {
+  .concept-title {
+    font-size: 2.2rem;
+    margin-bottom: 1.7rem;
+  }
+}
+@media (min-width: 640px) {
+  .concept-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+
+/* Responsive markdown font size and padding */
+
+.concept-markdown {
+  width: 100%;
+  background: var(--concept-markdown-bg-light);
+  border-radius: 0.9rem;
+  padding: 0.7rem 0.2rem;
+  border: 1.5px solid var(--concept-markdown-border-light);
+  box-shadow: var(--concept-markdown-shadow-light);
+  font-size: 0.93rem;
+  color: var(--concept-markdown-color-light);
+  margin-bottom: 0.4rem;
+  line-height: 1.6;
+  transition: box-shadow 0.2s;
+  word-break: break-word;
+}
+
+
+
+@media (max-width: 400px) {
+  .concept-markdown {
+    padding: 0.5rem 0.1rem;
+    font-size: 0.89rem;
+    border-radius: 0.6rem;
+  }
+}
+.concept-markdown:hover {
+  box-shadow: 0 4px 32px 0 rgba(59,130,246,0.13);
+}
+
+@media (min-width: 480px) {
+  .concept-markdown {
+    padding: 1.3rem 1.2rem;
+    font-size: 1.08rem;
+  }
+}
+@media (min-width: 640px) {
+  .concept-markdown {
+    padding: 2rem 2rem;
+    font-size: 1.18rem;
+  }
+}
+@media (min-width: 1024px) {
+  .concept-markdown {
+    padding: 2.5rem 2.5rem;
+    font-size: 1.25rem;
+  }
+}
+
+
+/* Hide the back button */
+.concept-back-btn {
+  display: none !important;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}

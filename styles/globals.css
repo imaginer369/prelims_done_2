@@ -1,12 +1,76 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html.dark {
+    color-scheme: dark;
+  }
+}
+
 /* Reset default margin and padding */
 html, body, #__next {
-
   margin: 0;
   padding: 0;
 }
 main > *:first-child {
   margin-top: 0;
+}
+
+/* Custom animation for loader */
+@keyframes spin-slow {
+  100% { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 2.5s linear infinite;
+}
+
+@keyframes progress-bar {
+  0% {
+    stroke-dashoffset: 125.6;
+  }
+  90% {
+    stroke-dashoffset: 12.56;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+.animate-progress-bar {
+  animation: progress-bar 2.2s cubic-bezier(0.4,0,0.2,1) infinite;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 1.2s ease-in;
+}
+
+/* Pagination and progressive loading styles */
+.swiper-slide-loading {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: blur(2px);
+  transition: opacity 0.3s, filter 0.3s;
+}
+
+/* Custom scrollbar for concept info area */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 #e0e7ef;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #e0e7ef;
+  border-radius: 8px;
 }

@@ -1,19 +1,13 @@
 "use client";
 
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import Image from "next/image";
+import ArticleLoader from "./ArticleLoader";
+import ArticleSlide from "./ArticleSlide";
 
 // Import Swiper CSS
 import "swiper/css";
 import "swiper/css/navigation";
-
-// Dynamically import ReactMarkdown and remarkGfm
-const LazyReactMarkdown = lazy(() => import("react-markdown"));
-const LazyRemarkGfm = lazy(() => import("remark-gfm"));
-
 import "swiper/css/pagination";
 
 interface Article {
@@ -31,33 +25,176 @@ interface Concept {
   info: string;
 }
 
-export default function NewsCarousel() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+interface NewsCarouselProps {
+  articles?: Article[];
+  initialArticles?: Article[];
+  forceFullContent?: boolean;
+}
 
+/**
+ * NewsCarousel component
+ * - SSR: Receives first 10 articles as initialArticles (server-side rendered)
+ * - Client: Loads next 5 articles at a time as user swipes to the end
+ * - Shows loading animation when fetching more
+ * - Uses Swiper for swipeable article slides
+ */
+export default function NewsCarousel({ articles: propArticles, initialArticles = [], forceFullContent = false }: NewsCarouselProps) {
+  // If articles prop is provided, use it directly (for date-based or filtered carousels)
+  // Otherwise, use SSR initialArticles and enable progressive loading
+  const isControlled = Array.isArray(propArticles);
+  const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(
+    isControlled ? propArticles! : initialArticles
+  );
+  // Loading state for initial SSR hydration (only for SSR mode)
+  const [loading, setLoading] = useState(!isControlled && initialArticles.length === 0);
+  // Loading state for progressive client fetch
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  // Number of articles to SSR (first batch)
+  const articlesPerPage = 10;
+  // Number of articles to fetch per client-side batch
+  const fetchBatchSize = 5;
+  // Whether there are more articles to fetch (only for SSR mode)
+  const [hasMore, setHasMore] = useState(!isControlled && initialArticles.length === articlesPerPage);
+  // Use type 'any' for Swiper ref to avoid type errors with Swiper types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const swiperRef = useRef<any>(null);
+
+  // Force the theme class on the root element according to app theme, overriding device preference for the whole page and Swiper
   useEffect(() => {
-    async function fetchArticles() {
-      try {
-        const res = await fetch("/api/articles");
-        const data: Article[] = await res.json();
-        setArticles(data);
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      } finally {
-        setLoading(false);
-      }
+    const appTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    const root = document.documentElement;
+    if (appTheme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
     }
-    fetchArticles();
+    let meta = document.querySelector('meta[name="color-scheme"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'color-scheme');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', appTheme === 'dark' ? 'dark' : 'light');
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center m-0 p-0">
-        Loading articles...
-      </div>
+  // Add theme classes to Swiper root
+  useEffect(() => {
+    const appTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    const swiperRoots = document.querySelectorAll('.swiper');
+    swiperRoots.forEach((el) => {
+      if (appTheme === 'dark') {
+        el.classList.add('dark');
+        el.classList.remove('light');
+      } else {
+        el.classList.add('light');
+        el.classList.remove('dark');
+      }
+    });
+  }, [articles]);
+
+  // Fetch concepts for a batch of articles (used for client-side fetches)
+  async function fetchConceptsForArticles(articlesBatch: Article[]): Promise<(Article & { concepts?: Concept[] })[]> {
+    const conceptsResults = await Promise.all(
+      articlesBatch.map(async (article) => {
+        try {
+          const res = await fetch(`/api/concepts?article_id=${article.id}`);
+          const data = await res.json();
+          return { ...article, concepts: Array.isArray(data) ? data : [] };
+        } catch {
+          return { ...article, concepts: [] };
+        }
+      })
     );
+    return conceptsResults;
   }
 
+  /**
+   * Initial client-side fetch (only if SSR failed or JS navigation)
+   * Only fetches the first 10 articles
+   */
+  useEffect(() => {
+    if (!isControlled && initialArticles.length === 0) {
+      async function fetchArticlesAndConcepts() {
+        try {
+          const res = await fetch("/api/articles?limit=10&offset=0");
+          const data: Article[] = await res.json();
+          const articlesWithConcepts = await fetchConceptsForArticles(data);
+          setArticles(articlesWithConcepts);
+        } catch {
+          console.error("Error fetching articles/concepts:");
+        } finally {
+          setLoading(false);
+        }
+      }
+      fetchArticlesAndConcepts();
+    }
+  }, [initialArticles, isControlled]);
+
+  /**
+   * Fetch next batch of articles (5 at a time) as user swipes to the end
+   * This is client-only and not SSR
+   */
+  async function fetchMoreArticles() {
+    if (isControlled || isFetchingMore || !hasMore) return;
+    setIsFetchingMore(true);
+    try {
+      const res = await fetch(`/api/articles?limit=${fetchBatchSize}&offset=${articles.length}`);
+      const data: Article[] = await res.json();
+      if (data.length < fetchBatchSize) setHasMore(false);
+      // Fetch concepts for these articles
+      const articlesWithConcepts = await fetchConceptsForArticles(data);
+      setArticles((prev) => [...prev, ...articlesWithConcepts]);
+    } catch {
+      setHasMore(false);
+    } finally {
+      setIsFetchingMore(false);
+    }
+  }
+
+  /**
+   * Swiper event handler: as user moves forward, always load next 5 articles
+   * Triggers on every forward movement, not just at the end
+   */
+  function handleSlideChange(swiper: unknown) {
+    const s = swiper as { activeIndex: number };
+    window.scrollTo(0, 0); // Scroll to top on slide change
+    if (!isControlled) {
+      // Only load more if user moved forward (not on first slide)
+      if (
+        s.activeIndex > 0 &&
+        hasMore &&
+        !isFetchingMore &&
+        // Only trigger if we haven't already loaded for this index
+        articles.length <= s.activeIndex + fetchBatchSize
+      ) {
+        fetchMoreArticles();
+      }
+    }
+  }
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      // Only trigger on desktop/laptop (optional: check screen size or pointer type)
+      if (window.matchMedia("(pointer: fine)").matches) {
+        if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+          swiperRef.current?.slidePrev();
+        } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+          swiperRef.current?.slideNext();
+        }
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Show loader while fetching initial SSR/client batch
+  if (loading) {
+    return <ArticleLoader />;
+  }
+
+  // Show message if no articles found
   if (!articles.length) {
     return (
       <div className="min-h-screen flex items-center justify-center m-0 p-0">
@@ -66,138 +203,32 @@ export default function NewsCarousel() {
     );
   }
 
+  // Render Swiper with loaded articles and loading slide if fetching more
   return (
     <Swiper
-	  modules={[]} // Remove Navigation and Pagination modules
-	  spaceBetween={30}
-	  slidesPerView={1}
-	  className="m-0 p-0"
-	  onSlideChange={() => window.scrollTo(0, 0)}
+      modules={[]}
+      spaceBetween={30}
+      slidesPerView={1}
+      className="m-0 p-0"
+      onSlideChange={handleSlideChange}
+      onSwiper={(swiper) => (swiperRef.current = swiper)}
     >
       {articles.map((article) => (
-        <SwiperSlide key={article.id} className="m-0 p-0">
-          <ArticleSlide article={article} />
+        <SwiperSlide
+          key={article.id}
+          className="m-0 p-0"
+        >
+          <ArticleSlide article={article} forceFullContent={forceFullContent} />
         </SwiperSlide>
       ))}
+      {/* Show loader slide at the end while fetching more */}
+      {isFetchingMore && (
+        <SwiperSlide className="swiper-slide-loading m-0 p-0">
+          <ArticleLoader />
+        </SwiperSlide>
+      )}
     </Swiper>
   );
 }
 
-interface ArticleSlideProps {
-  article: Article;
-}
-
-function ArticleSlide({ article }: ArticleSlideProps) {
-  const [showFullContent, setShowFullContent] = useState(false);
-  const [concepts, setConcepts] = useState<Concept[]>([]);
-  const hasSummary = article.quick_summary.trim().length > 0;
-
-  useEffect(() => {
-    async function fetchConcepts() {
-      if (showFullContent) {
-        try {
-          const res = await fetch(`/api/concepts?article_id=${article.id}`);
-          const data = await res.json();
-          setConcepts(Array.isArray(data) ? data : []);
-        } catch (error) {
-          console.error("Error fetching concepts:", error);
-          setConcepts([]);
-        }
-      }
-    }
-    fetchConcepts();
-  }, [showFullContent, article.id]);
-
-  return (
-    <div className="min-h-screen m-0 p-0">
-      <div className="relative w-full aspect-video m-0 p-0">
-        <Image
-          src={article.image_url}
-          alt={article.title}
-          fill
-          className="object-cover m-0 p-0"
-	  loading="lazy" 
-        />
-      </div>
-      <div className="p-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          {article.title}
-        </h1>
-        <p className="text-sm text-gray-400 italic mb-4">
-          {new Date(article.published_at).toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-        {hasSummary && !showFullContent ? (
-          <>
-            <div className="prose prose-indigo mb-4">
-              <Suspense fallback={<div>Loading markdown...</div>}>
-                <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {article.quick_summary}
-                </LazyReactMarkdown>
-              </Suspense>
-            </div>
-            <div className="flex justify-center">
-              <button
-                onClick={() => setShowFullContent(true)}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-full shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl"
-              >
-                Read More
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="prose prose-indigo mb-4">
-              <Suspense fallback={<div>Loading markdown...</div>}>
-                <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {article.content}
-                </LazyReactMarkdown>
-              </Suspense>
-            </div>
-
-            {concepts.length > 0 && (
-              <div className="mt-10">
-                <h2 className="text-xl font-semibold mb-4 text-blue-800">
-                  Important Concepts for Paper
-                </h2>
-                <div className="flex flex-wrap gap-4">
-                  {concepts.map((concept) => (
-                    <ConceptCard key={concept.id} concept={concept} />
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ConceptCard({ concept }: { concept: Concept }) {
-  const [showInfo, setShowInfo] = useState(false);
-
-  return (
-    <div className="w-full md:w-auto">
-      <button
-        onClick={() => setShowInfo((prev) => !prev)}
-        className="px-4 py-2 bg-blue-700 text-white font-semibold rounded-lg shadow hover:bg-blue-900 transition"
-      >
-        {concept.name}
-      </button>
-      {showInfo && (
-        <div className="prose mt-2 p-4 border rounded-md bg-gray-50">
-          <Suspense fallback={<div>Loading markdown...</div>}>
-            <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
-              {concept.info}
-            </LazyReactMarkdown>
-          </Suspense>
-        </div>
-      )}
-    </div>
-  );
-}
 
