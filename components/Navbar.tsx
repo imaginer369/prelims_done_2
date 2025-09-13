@@ -1,7 +1,22 @@
 // components/Navbar.tsx
-import Link from "next/link";
 
-export default function Navbar() {
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
+function Navbar() {
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+  useEffect(() => {
+    let ignore = false;
+    async function checkUser() {
+      const { data } = await supabase.auth.getUser();
+      if (!ignore) setUser(data?.user || null);
+    }
+    checkUser();
+    return () => { ignore = true; };
+  }, []);
+
   return (
     <nav className="bg-blue-600 text-white p-4 shadow-md">
       <div className="max-w-4xl mx-auto flex justify-between items-center">
@@ -18,12 +33,16 @@ export default function Navbar() {
           <Link href="/articles-by-date" className="hover:underline font-semibold text-yellow-300">
             Articles by Date
           </Link>
-          <Link href="/login" className="hover:underline">
-            Login
-          </Link>
+          <button
+            className="hover:underline"
+            onClick={() => router.push(user ? "/profile" : "/login")}
+          >
+            {user ? "Profile" : "Login"}
+          </button>
         </div>
       </div>
     </nav>
   );
-}
+
+// removed extra closing brace
 

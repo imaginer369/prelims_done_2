@@ -1,10 +1,27 @@
 "use client";
+
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { NewspaperIcon, AcademicCapIcon, CalendarDaysIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import type { User } from "@supabase/supabase-js";
 
 export default function BottomNav() {
   const pathname = usePathname() || "";
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    let ignore = false;
+    async function checkUser() {
+      const { data } = await supabase.auth.getUser();
+      if (!ignore) setUser(data?.user || null);
+    }
+    checkUser();
+    return () => { ignore = true; };
+  }, []);
+
   return (
     <nav className="fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 z-50 shadow-lg">
       <div className="flex justify-around items-center py-2">
@@ -27,10 +44,20 @@ export default function BottomNav() {
           <CalendarDaysIcon className="h-6 w-6 mb-1" />
           Article Nav
         </Link>
-        <Link href="/login" className={`flex flex-col items-center text-xs ${pathname === "/login" ? "text-blue-600 dark:text-blue-400 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-blue-600"}`}>
+        <button
+          className={`flex flex-col items-center text-xs focus:outline-none ${pathname === "/profile" ? "text-blue-600 dark:text-blue-400 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-blue-600"}`}
+          onClick={() => {
+            if (user) {
+              router.push("/profile");
+            } else {
+              router.push("/login");
+            }
+          }}
+          type="button"
+        >
           <UserCircleIcon className="h-6 w-6 mb-1" />
-          Login
-        </Link>
+          {user ? "Profile" : "Login"}
+        </button>
       </div>
     </nav>
   );
