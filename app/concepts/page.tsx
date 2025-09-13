@@ -2,13 +2,21 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+interface ConceptType {
+  id?: number;
+  title?: string;
+  name?: string;
+  description?: string;
+  // Add other fields as needed
+}
+
 function formatDate(date: Date) {
   return date.toISOString().split("T")[0];
 }
 
 export default function ConceptsPage() {
   const [date, setDate] = useState(() => formatDate(new Date()));
-  const [concepts, setConcepts] = useState<any[]>([]);
+  const [concepts, setConcepts] = useState<ConceptType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +32,7 @@ export default function ConceptsPage() {
         } else {
           setError(data.error || "Failed to fetch concepts");
         }
-      } catch (e) {
+      } catch {
         setError("Network error");
       } finally {
         setLoading(false);
