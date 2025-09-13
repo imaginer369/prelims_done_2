@@ -2,25 +2,16 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { NewspaperIcon, AcademicCapIcon, CalendarDaysIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { NewspaperIcon, AcademicCapIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import type { User } from "@supabase/supabase-js";
 
 export default function BottomNav() {
   const pathname = usePathname() || "";
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  // Removed router and user state as they are no longer needed
 
-  useEffect(() => {
-    let ignore = false;
-    async function checkUser() {
-      const { data } = await supabase.auth.getUser();
-      if (!ignore) setUser(data?.user || null);
-    }
-    checkUser();
-    return () => { ignore = true; };
-  }, []);
+  // Removed user session effect since user state is not used
 
   return (
     <nav className="fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 z-50 shadow-lg">
