@@ -3,11 +3,9 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ConceptType {
-  id?: number;
-  title?: string;
-  name?: string;
-  description?: string;
-  // Add other fields as needed
+  concept_name: string;
+  article_id: number;
+  published_at: string;
 }
 
 function formatDate(date: Date) {
@@ -79,10 +77,11 @@ export default function ConceptsPage() {
       )}
       <ul className="space-y-4 mt-4">
         {concepts.map((concept, idx) => (
-          <li key={concept.id || idx} className="p-4 rounded bg-blue-50 dark:bg-slate-800 border border-blue-100 dark:border-slate-700">
-            {/* Render concept details here. Adjust fields as needed. */}
-            <div className="font-semibold text-blue-800 dark:text-blue-200">{concept.title || concept.name || `Concept #${concept.id || idx+1}`}</div>
-            <div className="text-gray-700 dark:text-gray-200 text-sm mt-1">{concept.description || "(No description)"}</div>
+          <li key={concept.article_id + '-' + idx} className="p-4 rounded bg-blue-50 dark:bg-slate-800 border border-blue-100 dark:border-slate-700">
+            <div className="font-semibold text-blue-800 dark:text-blue-200 text-lg">{concept.concept_name}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {concept.published_at ? new Date(concept.published_at).toLocaleDateString() : ''}
+            </div>
           </li>
         ))}
       </ul>
