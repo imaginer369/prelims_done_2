@@ -6,18 +6,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import type { User } from "@supabase/supabase-js";
+
 function Navbar() {
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
-  useEffect(() => {
-    let ignore = false;
-    async function checkUser() {
-      const { data } = await supabase.auth.getUser();
-      if (!ignore) setUser(data?.user || null);
-    }
-    checkUser();
-    return () => { ignore = true; };
-  }, []);
 
   return (
     <nav className="bg-blue-600 text-white p-4 shadow-md">
