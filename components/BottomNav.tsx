@@ -1,11 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { NewspaperIcon, AcademicCapIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
-import type { User } from "@supabase/supabase-js";
 
 export default function BottomNav() {
   const pathname = usePathname() || "";
