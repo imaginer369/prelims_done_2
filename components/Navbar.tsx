@@ -20,11 +20,19 @@ function Navbar() {
 
   return (
     <nav className="bg-blue-600 text-white p-4 shadow-md">
-      <div className="max-w-4xl mx-auto flex justify-between items-center">
-        <h1 className="text-lg font-bold">
-          <Link href="/">Prelims Done</Link>
-        </h1>
-        <div className="space-x-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-center mb-2">
+          <h1 className="text-lg font-bold">
+            <Link href="/">Prelims Done</Link>
+          </h1>
+          <button
+            className="hover:underline px-4 py-1 rounded bg-blue-700 text-white font-medium"
+            onClick={() => router.push(user ? "/profile" : "/login")}
+          >
+            {user ? "Profile" : "Login"}
+          </button>
+        </div>
+        <div className="space-x-4 flex items-center">
           <Link href="/news" className="hover:underline">
             News
           </Link>
@@ -34,12 +42,6 @@ function Navbar() {
           <Link href="/articles-by-date" className="hover:underline font-semibold text-yellow-300">
             Articles by Date
           </Link>
-          <button
-            className="hover:underline"
-            onClick={() => router.push(user ? "/profile" : "/login")}
-          >
-            {user ? "Profile" : "Login"}
-          </button>
         </div>
       </div>
     </nav>
