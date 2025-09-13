@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import HeaderMenu from "../components/HeaderMenu";
+import Navbar from "../components/Navbar";
 import ThemeClientEffect from "../components/ThemeClientEffect";
 
 import BottomNavClientWrapper from "../components/BottomNavClientWrapper";
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </h1>
           </div>
         </div>
+        <Navbar />
       </header>
       {/* Main content */}
       <main className="m-0 p-0 bg-white dark:bg-slate-900 text-black dark:text-white min-h-screen pb-16">
