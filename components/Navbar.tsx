@@ -43,6 +43,6 @@ function Navbar() {
       </div>
     </nav>
   );
+}
 
-// removed extra closing brace
-
+export default Navbar;
