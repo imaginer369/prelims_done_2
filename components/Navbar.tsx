@@ -2,10 +2,6 @@
 // components/Navbar.tsx
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
-import type { User } from "@supabase/supabase-js";
 
 function Navbar() {
 
