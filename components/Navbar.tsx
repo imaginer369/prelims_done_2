@@ -26,12 +26,6 @@ function Navbar() {
           <h1 className="text-lg font-bold">
             <Link href="/">Prelims Done</Link>
           </h1>
-          <button
-            className="hover:underline px-4 py-1 rounded bg-blue-700 text-white font-medium"
-            onClick={() => router.push(user ? "/profile" : "/login")}
-          >
-            {user ? "Profile" : "Login"}
-          </button>
         </div>
         <div className="space-x-4 flex items-center">
           <Link href="/news" className="hover:underline">
