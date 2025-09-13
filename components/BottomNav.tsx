@@ -44,20 +44,7 @@ export default function BottomNav() {
           <CalendarDaysIcon className="h-6 w-6 mb-1" />
           Article Nav
         </Link>
-        <button
-          className={`flex flex-col items-center text-xs focus:outline-none ${pathname === "/profile" ? "text-blue-600 dark:text-blue-400 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-blue-600"}`}
-          onClick={() => {
-            if (user) {
-              router.push("/profile");
-            } else {
-              router.push("/login");
-            }
-          }}
-          type="button"
-        >
-          <UserCircleIcon className="h-6 w-6 mb-1" />
-          {user ? "Profile" : "Login"}
-        </button>
+  {/* Removed login/profile button as requested */}
       </div>
     </nav>
   );
