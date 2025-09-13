@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NewspaperIcon, AcademicCapIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { NewspaperIcon, AcademicCapIcon, CalendarDaysIcon, BookOpenIcon } from "@heroicons/react/24/outline";
 
 export default function BottomNav() {
   const pathname = usePathname() || "";
@@ -28,11 +28,15 @@ export default function BottomNav() {
           <AcademicCapIcon className="h-6 w-6 mb-1" />
           Quiz
         </Link>
+        <Link href="/concepts" className={`flex flex-col items-center text-xs ${pathname === "/concepts" ? "text-blue-600 dark:text-blue-400 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-blue-600"}`}>
+          <BookOpenIcon className="h-6 w-6 mb-1" />
+          Concepts
+        </Link>
         <Link href="/article-nav" className={`flex flex-col items-center text-xs ${pathname === "/article-nav" ? "text-blue-600 dark:text-blue-400 font-bold" : "text-gray-700 dark:text-gray-200 hover:text-blue-600"}`}>
           <CalendarDaysIcon className="h-6 w-6 mb-1" />
           Article Nav
         </Link>
-  {/* Removed login/profile button as requested */}
+        {/* Concepts page: to be implemented */}
       </div>
     </nav>
   );
