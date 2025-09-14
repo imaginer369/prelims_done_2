@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface ConceptType {
   concept_name: string;
-  concept_info: string;
   stars: number;
-  article_id: number;
+  concept_id: number;
   published_at: string;
 }
 
@@ -22,7 +22,7 @@ export default function ConceptsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openStars, setOpenStars] = useState<number | null>(null);
-  const [openConcept, setOpenConcept] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchConcepts() {
@@ -61,6 +61,11 @@ export default function ConceptsPage() {
   // Helper to render stars
   function renderStars(stars: number) {
     return <span className="text-yellow-500">{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>;
+  }
+
+  // Handle concept click
+  function handleConceptClick(concept_id: number) {
+    router.push(`/concept/${concept_id}`);
   }
 
   return (
@@ -108,26 +113,19 @@ export default function ConceptsPage() {
               </button>
               {openStars === stars && (
                 <ul className="divide-y divide-blue-100 dark:divide-slate-800">
-                  {grouped[stars].map((concept, idx) => (
-                    <li key={concept.article_id + '-' + idx} className="p-4">
-                      <div
-                        className="font-semibold text-blue-800 dark:text-blue-200 text-lg cursor-pointer flex justify-between items-center"
-                        onClick={() => setOpenConcept(openConcept === concept.article_id + '-' + idx ? null : concept.article_id + '-' + idx)}
+                  {grouped[stars].map((concept) => (
+                    <li key={concept.concept_id} className="p-4 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 rounded"
+                        onClick={() => handleConceptClick(concept.concept_id)}
                         tabIndex={0}
                         role="button"
-                        aria-expanded={openConcept === concept.article_id + '-' + idx}
-                      >
-                        <span>{concept.concept_name}</span>
+                        aria-label={`View details for ${concept.concept_name}`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="font-semibold text-blue-800 dark:text-blue-200 text-lg">{concept.concept_name}</span>
                         <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
                           {concept.published_at ? new Date(concept.published_at).toLocaleDateString() : ''}
                         </span>
-                        <span className="ml-2">{openConcept === concept.article_id + '-' + idx ? "▼" : "▶"}</span>
                       </div>
-                      {openConcept === concept.article_id + '-' + idx && (
-                        <div className="mt-2 text-gray-700 dark:text-gray-200 text-sm bg-blue-50 dark:bg-slate-800 p-3 rounded">
-                          {concept.concept_info}
-                        </div>
-                      )}
                     </li>
                   ))}
                 </ul>
