@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, Suspense, lazy } from "react";
 const LazyReactMarkdown = lazy(() => import("react-markdown"));
