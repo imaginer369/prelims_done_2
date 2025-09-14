@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface ConceptType {
   concept_name: string;
@@ -17,7 +17,9 @@ function formatDate(date: Date) {
 export default function ConceptsPage() {
 
 
-  const [date, setDate] = useState(() => formatDate(new Date()));
+  const searchParams = useSearchParams();
+  const initialDate = searchParams?.get("date") || formatDate(new Date());
+  const [date, setDate] = useState(initialDate);
   const [concepts, setConcepts] = useState<ConceptType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +50,9 @@ export default function ConceptsPage() {
   function changeDate(days: number) {
     const d = new Date(date);
     d.setDate(d.getDate() + days);
-    setDate(formatDate(d));
+    const newDate = formatDate(d);
+    setDate(newDate);
+    router.replace(`/concepts?date=${newDate}`);
   }
 
   // Group concepts by stars
@@ -65,7 +69,7 @@ export default function ConceptsPage() {
 
   // Handle concept click
   function handleConceptClick(concept_id: number) {
-    router.push(`/concept/${concept_id}`);
+    router.push(`/concept/${concept_id}?date=${date}`);
   }
 
   return (
@@ -82,7 +86,10 @@ export default function ConceptsPage() {
         <input
           type="date"
           value={date}
-          onChange={e => setDate(e.target.value)}
+          onChange={e => {
+            setDate(e.target.value);
+            router.replace(`/concepts?date=${e.target.value}`);
+          }}
           className="border rounded px-2 py-1 text-lg bg-white dark:bg-slate-900"
         />
         <button
