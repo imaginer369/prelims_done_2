@@ -37,13 +37,9 @@ export default function ConceptDetail() {
   }, [id]);
 
   return (
-    <main className="concept-bg">
-      <div className="concept-decor">
-        <div className="circle1" />
-        <div className="circle2" />
-      </div>
-      <section className="concept-section">
-        <button className="concept-back-btn" onClick={() => router.back()}>
+    <main className="min-h-screen bg-white dark:bg-slate-900 text-black dark:text-white flex flex-col items-center justify-center py-8 px-2">
+      <section className="w-full max-w-2xl rounded-xl shadow-lg p-8 bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-700">
+        <button className="mb-6 px-4 py-2 rounded bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-blue-200 font-semibold hover:bg-blue-200 dark:hover:bg-slate-700 transition" onClick={() => router.back()}>
           ← Back
         </button>
         {loading ? (
@@ -55,8 +51,8 @@ export default function ConceptDetail() {
           <div className="text-red-500 font-semibold text-lg py-8">{error}</div>
         ) : concept ? (
           <>
-            <h1 className="concept-title">{concept.name}</h1>
-            <div className="concept-markdown">
+            <h1 className="text-3xl font-bold mb-6 text-blue-700 dark:text-blue-200">{concept.name}</h1>
+            <div className="prose prose-blue dark:prose-invert max-w-none mb-6 text-lg text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
               <Suspense fallback={<div>Loading markdown...</div>}>
                 <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
                   {concept.info}
