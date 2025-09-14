@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 interface ConceptType {
   concept_name: string;
@@ -14,7 +15,7 @@ function formatDate(date: Date) {
   return date.toISOString().split("T")[0];
 }
 
-export default function ConceptsPage() {
+function ConceptsPage() {
 
 
   const searchParams = useSearchParams();
@@ -142,5 +143,13 @@ export default function ConceptsPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function ConceptsPageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConceptsPage />
+    </Suspense>
   );
 }
