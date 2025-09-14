@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useState, Suspense, lazy } from "react";
-import "../../styles/concept.css";
 const LazyReactMarkdown = lazy(() => import("react-markdown"));
 import remarkGfm from "remark-gfm";
 
