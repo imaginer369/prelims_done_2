@@ -20,11 +20,12 @@ function ConceptsPage() {
 
   const searchParams = useSearchParams();
   const initialDate = searchParams?.get("date") || formatDate(new Date());
+  const initialOpenStars = searchParams?.get("openStars") ? Number(searchParams.get("openStars")) : null;
   const [date, setDate] = useState(initialDate);
   const [concepts, setConcepts] = useState<ConceptType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [openStars, setOpenStars] = useState<number | null>(null);
+  const [openStars, setOpenStars] = useState<number | null>(initialOpenStars);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,7 +54,7 @@ function ConceptsPage() {
     d.setDate(d.getDate() + days);
     const newDate = formatDate(d);
     setDate(newDate);
-    router.replace(`/concepts?date=${newDate}`);
+    router.replace(`/concepts?date=${newDate}${openStars !== null ? `&openStars=${openStars}` : ''}`);
   }
 
   // Group concepts by stars
@@ -70,7 +71,7 @@ function ConceptsPage() {
 
   // Handle concept click
   function handleConceptClick(concept_id: number) {
-    router.push(`/concept/${concept_id}?date=${date}`);
+    router.push(`/concept/${concept_id}?date=${date}${openStars !== null ? `&openStars=${openStars}` : ''}`);
   }
 
   return (
@@ -89,7 +90,7 @@ function ConceptsPage() {
           value={date}
           onChange={e => {
             setDate(e.target.value);
-            router.replace(`/concepts?date=${e.target.value}`);
+            router.replace(`/concepts?date=${e.target.value}${openStars !== null ? `&openStars=${openStars}` : ''}`);
           }}
           className="border rounded px-2 py-1 text-lg bg-white dark:bg-slate-900"
         />
@@ -113,7 +114,11 @@ function ConceptsPage() {
             <div key={stars} className="border rounded bg-white dark:bg-slate-900">
               <button
                 className="w-full flex justify-between items-center px-4 py-3 font-semibold text-lg text-blue-700 dark:text-blue-200 focus:outline-none"
-                onClick={() => setOpenStars(openStars === stars ? null : stars)}
+                onClick={() => {
+                  const newOpenStars = openStars === stars ? null : stars;
+                  setOpenStars(newOpenStars);
+                  router.replace(`/concepts?date=${date}${newOpenStars !== null ? `&openStars=${newOpenStars}` : ''}`);
+                }}
                 aria-expanded={openStars === stars}
               >
                 <span>{renderStars(stars)} Concepts ({grouped[stars].length})</span>
