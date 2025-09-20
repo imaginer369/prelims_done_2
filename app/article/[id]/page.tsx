@@ -47,7 +47,7 @@ export default function ArticleDetailPage() {
 
   return (
     <main className="min-h-screen bg-white dark:bg-slate-900 text-black dark:text-white flex justify-center py-8 px-2">
-      <section className="w-full max-w-4xl md:rounded-xl shadow-lg p-4 md:p-12 bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-700">
+      <section className="w-full max-w-4xl lg:max-w-5xl xl:max-w-7xl md:rounded-xl shadow-lg p-4 md:p-12 lg:p-20 bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-700">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16">
             <span className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mb-4"></span>
@@ -61,7 +61,7 @@ export default function ArticleDetailPage() {
             {article.image_url && (
               <img src={article.image_url} alt={article.title} className="w-full max-h-96 object-cover rounded-xl mb-6" />
             )}
-            <div className="prose prose-blue dark:prose-invert max-w-none mb-6 text-lg text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
+            <div className="prose prose-blue prose-lg lg:prose-xl dark:prose-invert max-w-none mb-6 text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
               <Suspense fallback={<div>Loading markdown...</div>}>
                 <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
                   {article.content}
