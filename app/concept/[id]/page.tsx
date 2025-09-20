@@ -39,11 +39,8 @@ export default function ConceptDetail() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-white dark:bg-slate-900 text-black dark:text-white flex flex-col items-center justify-center py-8 px-2">
-      <section className="w-full max-w-2xl rounded-xl shadow-lg p-8 bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-700">
-        <button className="mb-6 px-4 py-2 rounded bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-blue-200 font-semibold hover:bg-blue-200 dark:hover:bg-slate-700 transition" onClick={() => router.back()}>
-          ← Back
-        </button>
+    <main className="min-h-screen bg-white dark:bg-slate-900 text-black dark:text-white flex justify-center py-8 px-2">
+      <section className="w-full max-w-4xl md:rounded-xl shadow-lg p-4 md:p-12 bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-700">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16">
             <span className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mb-4"></span>
