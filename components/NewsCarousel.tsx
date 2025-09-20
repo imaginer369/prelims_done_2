@@ -1,4 +1,5 @@
 
+
 // Key for storing last slide index in sessionStorage
 "use client";
 const LAST_SLIDE_INDEX_KEY = "lastSlideIndex";
@@ -238,12 +239,12 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       }}
       initialSlide={initialSlide}
     >
-      {articles.map((article, idx) => (
+      {articles.map((article) => (
         <SwiperSlide
           key={article.id}
           className="m-0 p-0"
         >
-          <ArticleSlide article={article} slideIndex={idx} />
+          <ArticleSlide article={article} />
         </SwiperSlide>
       ))}
       {/* Show loader slide at the end while fetching more */}
