@@ -11,7 +11,6 @@ interface Concept {
 }
 
 export default function ConceptDetail() {
-  const router = useRouter();
   const [concept, setConcept] = useState<Concept | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
