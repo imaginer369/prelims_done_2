@@ -25,7 +25,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <div className="flex items-center gap-4">
             <HeaderMenu />
             <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-200 drop-shadow-lg">
-              prelims done
+              Prelims Done
             </h1>
           </div>
           <HeaderProfileButton />
