@@ -62,7 +62,7 @@ export default function ArticleSlide({ article }: ArticleSlideProps) {
           <div className="flex-1 flex flex-col p-4 sm:p-10 overflow-y-auto max-h-[80vh] pb-35">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-blue-200 mb-2 leading-tight drop-shadow-sm">
               {article.title}
-            </h1>Articles are fetched from the backend, likely via an API route such as /api/articles or similar.
+            </h1>
             <div className="flex items-center gap-3 mb-4">
               <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-100 dark:text-blue-200 dark:bg-slate-800 px-3 py-1 rounded-full shadow-sm">
                 Article
