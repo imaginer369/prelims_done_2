@@ -1,5 +1,5 @@
 "use client";
-import { useState, Suspense, lazy, useRef } from "react";
+import { Suspense, lazy } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 // import ConceptCard from "./ConceptCard";
@@ -29,10 +29,10 @@ interface Article {
 
 interface ArticleSlideProps {
   article: Article;
-  forceFullContent?: boolean;
+  // forceFullContent?: boolean;
 }
 
-export default function ArticleSlide({ article, forceFullContent = false }: ArticleSlideProps) {
+export default function ArticleSlide({ article }: ArticleSlideProps) {
   const hasSummary = article.quick_summary.trim().length > 0;
   const router = useRouter();
 
