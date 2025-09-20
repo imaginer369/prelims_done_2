@@ -1,3 +1,5 @@
+// Key for storing last slide index in sessionStorage
+const LAST_SLIDE_INDEX_KEY = "lastSlideIndex";
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -39,6 +41,18 @@ interface NewsCarouselProps {
  * - Uses Swiper for swipeable article slides
  */
 export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
+  // State to store initial slide index
+  const [initialSlide, setInitialSlide] = useState(0);
+  // On mount, restore last slide index from sessionStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
+      const idx = stored ? parseInt(stored, 10) : 0;
+      if (!isNaN(idx) && idx >= 0) {
+        setInitialSlide(idx);
+      }
+    }
+  }, []);
   // If articles prop is provided, use it directly (for date-based or filtered carousels)
   // Otherwise, use SSR initialArticles and enable progressive loading
   const isControlled = Array.isArray(propArticles);
@@ -160,6 +174,10 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
   function handleSlideChange(swiper: unknown) {
     const s = swiper as { activeIndex: number };
     window.scrollTo(0, 0); // Scroll to top on slide change
+    // Save current slide index to sessionStorage
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(LAST_SLIDE_INDEX_KEY, String(s.activeIndex));
+    }
     if (!isControlled) {
       // Only load more if user moved forward (not on first slide)
       if (
@@ -211,7 +229,14 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       slidesPerView={1}
       className="m-0 p-0"
       onSlideChange={handleSlideChange}
-      onSwiper={(swiper) => (swiperRef.current = swiper)}
+      onSwiper={(swiper) => {
+        swiperRef.current = swiper;
+        // Set to initial slide if not already there
+        if (initialSlide > 0 && swiper.activeIndex !== initialSlide) {
+          swiper.slideTo(initialSlide, 0);
+        }
+      }}
+      initialSlide={initialSlide}
     >
       {articles.map((article) => (
         <SwiperSlide
