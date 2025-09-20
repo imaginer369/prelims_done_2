@@ -1,7 +1,7 @@
 "use client";
 import { Suspense, lazy } from "react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 // import ConceptCard from "./ConceptCard";
 const LazyReactMarkdown = lazy(() => import("react-markdown"));
 import remarkGfm from "remark-gfm";
@@ -32,7 +32,7 @@ interface ArticleSlideProps {
   slideIndex?: number;
 }
 
-const LAST_SLIDE_INDEX_KEY = "lastSlideIndex";
+
 export default function ArticleSlide({ article, slideIndex }: ArticleSlideProps) {
   const hasSummary = article.quick_summary.trim().length > 0;
   const router = useRouter();
