@@ -1,7 +1,7 @@
-// Key for storing last slide index in sessionStorage
-const LAST_SLIDE_INDEX_KEY = "lastSlideIndex";
-"use client";
 
+// Key for storing last slide index in sessionStorage
+"use client";
+const LAST_SLIDE_INDEX_KEY = "lastSlideIndex";
 import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ArticleLoader from "./ArticleLoader";
