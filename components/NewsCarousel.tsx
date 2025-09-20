@@ -38,7 +38,7 @@ interface NewsCarouselProps {
  * - Shows loading animation when fetching more
  * - Uses Swiper for swipeable article slides
  */
-export default function NewsCarousel({ articles: propArticles, initialArticles = [], forceFullContent = false }: NewsCarouselProps) {
+export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
   // If articles prop is provided, use it directly (for date-based or filtered carousels)
   // Otherwise, use SSR initialArticles and enable progressive loading
   const isControlled = Array.isArray(propArticles);
