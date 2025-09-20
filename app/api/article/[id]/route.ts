@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../../../lib/supabaseClient';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const articleId = params.id;
+export async function GET(req: NextRequest) {
+  const segments = req.nextUrl.pathname.split('/');
+  const articleId = segments[segments.length - 1];
   if (!articleId) {
     return NextResponse.json({ error: 'Missing article id' }, { status: 400 });
   }
