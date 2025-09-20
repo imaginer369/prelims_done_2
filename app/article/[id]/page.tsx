@@ -61,7 +61,7 @@ export default function ArticleDetailPage() {
             {article.image_url && (
               <img src={article.image_url} alt={article.title} className="w-full max-h-96 object-cover rounded-xl mb-6" />
             )}
-            <div className="prose prose-blue prose-lg lg:prose-xl dark:prose-invert max-w-none mb-6 text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
+            <div className="prose prose-blue prose-lg lg:prose-xl xl:prose-2xl dark:prose-invert max-w-none mb-6 text-gray-800 dark:text-white animate-fade-in bg-white dark:bg-slate-900">
               <Suspense fallback={<div>Loading markdown...</div>}>
                 <LazyReactMarkdown remarkPlugins={[remarkGfm]}>
                   {article.content}
