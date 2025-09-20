@@ -29,10 +29,11 @@ interface Article {
 
 interface ArticleSlideProps {
   article: Article;
-  // forceFullContent?: boolean;
+  slideIndex?: number;
 }
 
-export default function ArticleSlide({ article }: ArticleSlideProps) {
+const LAST_SLIDE_INDEX_KEY = "lastSlideIndex";
+export default function ArticleSlide({ article, slideIndex }: ArticleSlideProps) {
   const hasSummary = article.quick_summary.trim().length > 0;
   const router = useRouter();
 
@@ -87,7 +88,12 @@ export default function ArticleSlide({ article }: ArticleSlideProps) {
                 </div>
                 <div className="flex justify-center mt-2">
                   <button
-                    onClick={() => router.push(`/article/${article.id}`)}
+                    onClick={() => {
+                      if (typeof window !== "undefined" && typeof slideIndex === "number") {
+                        sessionStorage.setItem(LAST_SLIDE_INDEX_KEY, String(slideIndex));
+                      }
+                      router.push(`/article/${article.id}`);
+                    }}
                     className="px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-full shadow-lg transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 text-lg tracking-wide animate-fade-in dark:bg-gradient-to-r dark:from-blue-700 dark:to-cyan-700"
                     style={{
                       background: 'linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)',
