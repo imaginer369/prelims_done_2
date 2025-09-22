@@ -45,7 +45,24 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
   console.log("NewsCarousel render: articles.length =", propArticles ? propArticles.length : initialArticles.length);
   const lastSlideIndexFromSession = typeof window !== "undefined" ? sessionStorage.getItem(LAST_SLIDE_INDEX_KEY) : null;
   console.log("lastSlideIndex from sessionStorage:", lastSlideIndexFromSession);
-  // Synchronously get initial slide index from sessionStorage
+  // Caching keys
+  const ARTICLES_CACHE_KEY = "cachedArticles";
+  // Always fetch from server on initial load
+  const isControlled = Array.isArray(propArticles);
+  // Restore from cache only when navigating back
+  const getCachedArticles = () => {
+    if (typeof window !== "undefined") {
+      const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {
+          return null;
+        }
+      }
+    }
+    return null;
+  };
   const getInitialSlide = () => {
     if (typeof window !== "undefined") {
       const stored = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
@@ -54,13 +71,27 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
     }
     return 0;
   };
-  const [initialSlide] = useState(getInitialSlide());
-  // If articles prop is provided, use it directly (for date-based or filtered carousels)
-  // Otherwise, use SSR initialArticles and enable progressive loading
-  const isControlled = Array.isArray(propArticles);
+  // If navigating back, use cached articles and lastSlideIndex
   const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(
     isControlled ? propArticles! : initialArticles
   );
+  const [initialSlide, setInitialSlide] = useState(0);
+
+  // On mount, check for cached articles and lastSlideIndex ONLY if not initial load
+  useEffect(() => {
+    if (!isControlled && initialArticles.length === 0) {
+      const cached = getCachedArticles();
+      const idx = getInitialSlide();
+      if (cached && cached.length > 0) {
+        setArticles(cached);
+        setInitialSlide(idx);
+        return;
+      }
+      setInitialSlide(0);
+    } else {
+      setInitialSlide(0);
+    }
+  }, [isControlled, initialArticles]);
   useEffect(() => {
     console.log("Articles state updated, articles.length =", articles.length);
   }, [articles]);
@@ -143,6 +174,8 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
           const data: Article[] = await res.json();
           const articlesWithConcepts = await fetchConceptsForArticles(data);
           setArticles(articlesWithConcepts);
+          // Cache articles after fetch
+          sessionStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(articlesWithConcepts));
         } catch {
           console.error("Error fetching articles/concepts:");
         } finally {
@@ -166,7 +199,11 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       if (data.length < fetchBatchSize) setHasMore(false);
       // Fetch concepts for these articles
       const articlesWithConcepts = await fetchConceptsForArticles(data);
-      setArticles((prev) => [...prev, ...articlesWithConcepts]);
+      setArticles((prev) => {
+        const updated = [...prev, ...articlesWithConcepts];
+        sessionStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(updated));
+        return updated;
+      });
     } catch {
       setHasMore(false);
     } finally {
