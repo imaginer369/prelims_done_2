@@ -240,6 +240,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
         // Set to initial slide if not already there
         if (initialSlide > 0 && swiper.activeIndex !== initialSlide) {
           swiper.slideTo(initialSlide, 0);
+          console.log("Swiper initialized, moving to initial slide:", initialSlide);
         }
       }}
       initialSlide={initialSlide}
