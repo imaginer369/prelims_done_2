@@ -42,21 +42,16 @@ interface NewsCarouselProps {
  * - Uses Swiper for swipeable article slides
  */
 export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
-  // State to store initial slide index
-  const [initialSlide, setInitialSlide] = useState(0);
-  // On mount, restore last slide index from sessionStorage
-  useEffect(() => {
+  // Synchronously get initial slide index from sessionStorage
+  const getInitialSlide = () => {
     if (typeof window !== "undefined") {
       const stored = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
-      console.log("Restored last slide index from session:", stored);
-
       const idx = stored ? parseInt(stored, 10) : 0;
-      if (!isNaN(idx) && idx >= 0) {
-        setInitialSlide(idx);
-        console.log("Setting initial slide to:", idx);
-      }
+      return !isNaN(idx) && idx >= 0 ? idx : 0;
     }
-  }, []);
+    return 0;
+  };
+  const [initialSlide, setInitialSlide] = useState(getInitialSlide());
   // If articles prop is provided, use it directly (for date-based or filtered carousels)
   // Otherwise, use SSR initialArticles and enable progressive loading
   const isControlled = Array.isArray(propArticles);
