@@ -58,6 +58,8 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
 
   // Restore from cache on client mount if not controlled and no initialArticles
   useEffect(() => {
+    console.log("NewsCarousel useEffect for cache check");
+    console.log(isControlled, initialArticles.length);
     if (!isControlled && initialArticles.length === 0) {
       const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
       console.log("[CACHE] NewsCarousel: Checking for cached articles and last slide index");
