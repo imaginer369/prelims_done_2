@@ -56,6 +56,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
     const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
     if (cached) {
       try {
+        console.log("Parsing cached articles from sessionStorage");
         cachedArticles = JSON.parse(cached);
       } catch {
         cachedArticles = null;
