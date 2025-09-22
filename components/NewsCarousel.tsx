@@ -43,9 +43,7 @@ interface NewsCarouselProps {
  */
 export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
   // ...existing code...
-  console.log("NewsCarousel render: articles.length =", propArticles ? propArticles.length : initialArticles.length);
   const lastSlideIndexFromSession = typeof window !== "undefined" ? sessionStorage.getItem(LAST_SLIDE_INDEX_KEY) : null;
-  console.log("lastSlideIndex from sessionStorage:", lastSlideIndexFromSession);
   // Caching keys
   const ARTICLES_CACHE_KEY = "cachedArticles";
   const isControlled = Array.isArray(propArticles);
@@ -58,11 +56,9 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
 
   // Restore from cache on client mount if not controlled and no initialArticles
   useEffect(() => {
-    console.log("NewsCarousel useEffect for cache check");
-    console.log(isControlled, initialArticles.length);
+  // ...existing code...
     if (!isControlled && initialArticles.length === 10) {
       const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
-      console.log("[CACHE] NewsCarousel: Checking for cached articles and last slide index");
       const storedIdx = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
       let restoredIdx = 0;
       if (cached) {
@@ -70,10 +66,8 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
           const parsed = JSON.parse(cached);
           if (parsed && parsed.length > 0) {
             setArticles(parsed);
-            console.log("[CACHE] NewsCarousel: Restoring articles from cache, count:", parsed.length);
           }
         } catch {
-          console.log("[CACHE] NewsCarousel: Failed to parse cached articles");
         }
       }
       if (storedIdx) {
@@ -81,20 +75,17 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
         if (!isNaN(idx) && idx >= 0) {
           setInitialSlide(idx);
           restoredIdx = idx;
-          console.log("[CACHE] NewsCarousel: Restoring lastSlideIndex from cache:", idx);
         }
       }
       // Move Swiper to restored index after mount
       setTimeout(() => {
         if (swiperRef.current && restoredIdx > 0) {
           swiperRef.current.slideTo(restoredIdx, 0);
-          console.log("[CACHE] NewsCarousel: Manually moved Swiper to restored index:", restoredIdx);
         }
       }, 0);
     }
   }, [isControlled, initialArticles]);
   useEffect(() => {
-    console.log("Articles state updated, articles.length =", articles.length);
   }, [articles]);
   // Loading state for initial SSR hydration (only for SSR mode)
   const [loading, setLoading] = useState(!isControlled && initialArticles.length === 0);
@@ -151,7 +142,6 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       articlesBatch.map(async (article) => {
         try {
           const res = await fetch(`/api/concepts?article_id=${article.id}`);
-          console.log("Fetched concepts for article", article.id, "status:", res.status);
           const data = await res.json();
           return { ...article, concepts: Array.isArray(data) ? data : [] };
         } catch {
@@ -171,14 +161,13 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       async function fetchArticlesAndConcepts() {
         try {
           const res = await fetch("/api/articles?limit=10&offset=0");
-          console.log("Fetched initial articles, status:", res.status);
           const data: Article[] = await res.json();
           const articlesWithConcepts = await fetchConceptsForArticles(data);
           setArticles(articlesWithConcepts);
           // Cache articles after fetch
           sessionStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(articlesWithConcepts));
         } catch {
-          console.error("Error fetching articles/concepts:");
+          // ...existing code...
         } finally {
           setLoading(false);
         }
@@ -277,11 +266,9 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       onSwiper={(swiper) => {
         swiperRef.current = swiper;
         // Set to initial slide if not already there
-        console.log("Swiper onSwiper event, current activeIndex:", swiper.activeIndex, "initialSlide:", initialSlide);
-        console.log("Swiper: articles.length =", articles.length, "lastSlideIndex from sessionStorage:", lastSlideIndexFromSession);
+  // ...existing code...
         if (initialSlide > 0 && swiper.activeIndex !== initialSlide) {
           swiper.slideTo(initialSlide, 0);
-          console.log("Swiper initialized, moving to initial slide:", initialSlide);
         }
       }}
       initialSlide={initialSlide}
