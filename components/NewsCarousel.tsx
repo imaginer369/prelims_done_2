@@ -51,7 +51,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
     }
     return 0;
   };
-  const [initialSlide, setInitialSlide] = useState(getInitialSlide());
+  const [initialSlide] = useState(getInitialSlide());
   // If articles prop is provided, use it directly (for date-based or filtered carousels)
   // Otherwise, use SSR initialArticles and enable progressive loading
   const isControlled = Array.isArray(propArticles);
