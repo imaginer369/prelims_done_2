@@ -118,6 +118,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       articlesBatch.map(async (article) => {
         try {
           const res = await fetch(`/api/concepts?article_id=${article.id}`);
+          console.log("Fetched concepts for article", article.id, "status:", res.status);
           const data = await res.json();
           return { ...article, concepts: Array.isArray(data) ? data : [] };
         } catch {
