@@ -57,7 +57,9 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
     if (cached) {
       try {
         cachedArticles = JSON.parse(cached);
-        console.log("[CACHE] NewsCarousel: Restoring articles from cache, count:", cachedArticles.length);
+        if (cachedArticles) {
+          console.log("[CACHE] NewsCarousel: Restoring articles from cache, count:", cachedArticles.length);
+        }
       } catch {
         cachedArticles = null;
       }
