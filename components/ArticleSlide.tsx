@@ -91,10 +91,6 @@ export default function ArticleSlide({ article, slideIndex }: ArticleSlideProps)
                     onClick={() => {
                       // Use query param for slide index
                       const url = `/article/${article.id}${typeof slideIndex === "number" ? `?fromSlide=${slideIndex}` : ''}`;
-                      console.log("Message from ArticleSlide.tsx:");
-                      console.log("Navigating to article URL:", url);
-                      console.log("slideIndex:", slideIndex);
-                      console.log("Message ended")
                       router.push(url);
                     }}
                     className="px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-full shadow-lg transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 text-lg tracking-wide animate-fade-in dark:bg-gradient-to-r dark:from-blue-700 dark:to-cyan-700"
