@@ -138,6 +138,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       async function fetchArticlesAndConcepts() {
         try {
           const res = await fetch("/api/articles?limit=10&offset=0");
+          console.log("Fetched initial articles, status:", res.status);
           const data: Article[] = await res.json();
           const articlesWithConcepts = await fetchConceptsForArticles(data);
           setArticles(articlesWithConcepts);
