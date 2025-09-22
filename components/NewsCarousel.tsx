@@ -43,7 +43,6 @@ interface NewsCarouselProps {
  */
 export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
   // ...existing code...
-  const lastSlideIndexFromSession = typeof window !== "undefined" ? sessionStorage.getItem(LAST_SLIDE_INDEX_KEY) : null;
   // Caching keys
   const ARTICLES_CACHE_KEY = "cachedArticles";
   const isControlled = Array.isArray(propArticles);
