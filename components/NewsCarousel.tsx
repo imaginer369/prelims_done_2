@@ -42,6 +42,9 @@ interface NewsCarouselProps {
  * - Uses Swiper for swipeable article slides
  */
 export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
+  console.log("NewsCarousel render: articles.length =", propArticles ? propArticles.length : initialArticles.length);
+  const lastSlideIndexFromSession = typeof window !== "undefined" ? sessionStorage.getItem(LAST_SLIDE_INDEX_KEY) : null;
+  console.log("lastSlideIndex from sessionStorage:", lastSlideIndexFromSession);
   // Synchronously get initial slide index from sessionStorage
   const getInitialSlide = () => {
     if (typeof window !== "undefined") {
@@ -58,6 +61,9 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
   const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(
     isControlled ? propArticles! : initialArticles
   );
+  useEffect(() => {
+    console.log("Articles state updated, articles.length =", articles.length);
+  }, [articles]);
   // Loading state for initial SSR hydration (only for SSR mode)
   const [loading, setLoading] = useState(!isControlled && initialArticles.length === 0);
   // Loading state for progressive client fetch
@@ -234,6 +240,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
         swiperRef.current = swiper;
         // Set to initial slide if not already there
         console.log("Swiper onSwiper event, current activeIndex:", swiper.activeIndex, "initialSlide:", initialSlide);
+        console.log("Swiper: articles.length =", articles.length, "lastSlideIndex from sessionStorage:", lastSlideIndexFromSession);
         if (initialSlide > 0 && swiper.activeIndex !== initialSlide) {
           swiper.slideTo(initialSlide, 0);
           console.log("Swiper initialized, moving to initial slide:", initialSlide);
