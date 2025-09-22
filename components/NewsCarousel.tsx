@@ -47,51 +47,35 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
   console.log("lastSlideIndex from sessionStorage:", lastSlideIndexFromSession);
   // Caching keys
   const ARTICLES_CACHE_KEY = "cachedArticles";
-  // Always fetch from server on initial load
   const isControlled = Array.isArray(propArticles);
-  // Restore from cache only when navigating back
-  const getCachedArticles = () => {
-    if (typeof window !== "undefined") {
-      const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
-      if (cached) {
-        try {
-          return JSON.parse(cached);
-        } catch {
-          return null;
-        }
-      }
-    }
-    return null;
-  };
-  const getInitialSlide = () => {
-    if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
-      const idx = stored ? parseInt(stored, 10) : 0;
-      return !isNaN(idx) && idx >= 0 ? idx : 0;
-    }
-    return 0;
-  };
-  // If navigating back, use cached articles and lastSlideIndex
-  const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(
-    isControlled ? propArticles! : initialArticles
-  );
-  const [initialSlide, setInitialSlide] = useState(0);
 
-  // On mount, check for cached articles and lastSlideIndex ONLY if not initial load
-  useEffect(() => {
-    if (!isControlled && initialArticles.length === 0) {
-      const cached = getCachedArticles();
-      const idx = getInitialSlide();
-      if (cached && cached.length > 0) {
-        setArticles(cached);
-        setInitialSlide(idx);
-        return;
+  // Synchronously get cached articles and lastSlideIndex for first render
+  let cachedArticles: (Article & { concepts?: Concept[] })[] | null = null;
+  let cachedSlideIndex: number = 0;
+  if (typeof window !== "undefined" && !isControlled && initialArticles.length === 0) {
+    const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
+    if (cached) {
+      try {
+        cachedArticles = JSON.parse(cached);
+      } catch {
+        cachedArticles = null;
       }
-      setInitialSlide(0);
-    } else {
-      setInitialSlide(0);
     }
-  }, [isControlled, initialArticles]);
+    const storedIdx = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
+    if (storedIdx) {
+      const idx = parseInt(storedIdx, 10);
+      if (!isNaN(idx) && idx >= 0) {
+        cachedSlideIndex = idx;
+      }
+    }
+  }
+
+  const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(
+    isControlled ? propArticles! : (cachedArticles ? cachedArticles : initialArticles)
+  );
+  const [initialSlide, setInitialSlide] = useState(
+    isControlled ? 0 : (cachedArticles ? cachedSlideIndex : 0)
+  );
   useEffect(() => {
     console.log("Articles state updated, articles.length =", articles.length);
   }, [articles]);
