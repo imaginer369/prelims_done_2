@@ -56,8 +56,8 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
     const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
     if (cached) {
       try {
-        console.log("Parsing cached articles from sessionStorage");
         cachedArticles = JSON.parse(cached);
+        console.log("[CACHE] NewsCarousel: Restoring articles from cache, count:", cachedArticles.length);
       } catch {
         cachedArticles = null;
       }
@@ -67,6 +67,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
       const idx = parseInt(storedIdx, 10);
       if (!isNaN(idx) && idx >= 0) {
         cachedSlideIndex = idx;
+        console.log("[CACHE] NewsCarousel: Restoring lastSlideIndex from cache:", cachedSlideIndex);
       }
     }
   }
