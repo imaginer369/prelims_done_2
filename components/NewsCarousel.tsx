@@ -49,37 +49,37 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
   const ARTICLES_CACHE_KEY = "cachedArticles";
   const isControlled = Array.isArray(propArticles);
 
-  // Synchronously get cached articles and lastSlideIndex for first render
-  let cachedArticles: (Article & { concepts?: Concept[] })[] | null = null;
-  let cachedSlideIndex: number = 0;
-  if (typeof window !== "undefined" && !isControlled && initialArticles.length === 0) {
-    const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
-    if (cached) {
-      try {
-        cachedArticles = JSON.parse(cached);
-        if (cachedArticles) {
-          console.log("[CACHE] NewsCarousel: Restoring articles from cache, count:", cachedArticles.length);
-        }
-      } catch {
-        cachedArticles = null;
-      }
-    }
-    const storedIdx = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
-    if (storedIdx) {
-      const idx = parseInt(storedIdx, 10);
-      if (!isNaN(idx) && idx >= 0) {
-        cachedSlideIndex = idx;
-        console.log("[CACHE] NewsCarousel: Restoring lastSlideIndex from cache:", cachedSlideIndex);
-      }
-    }
-  }
-
+  // State for articles and initial slide
   const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(
-    isControlled ? propArticles! : (cachedArticles ? cachedArticles : initialArticles)
+    isControlled ? propArticles! : initialArticles
   );
-  const [initialSlide] = useState(
-    isControlled ? 0 : (cachedArticles ? cachedSlideIndex : 0)
-  );
+  const [initialSlide, setInitialSlide] = useState(0);
+
+  // Restore from cache on client mount if not controlled and no initialArticles
+  useEffect(() => {
+    if (!isControlled && initialArticles.length === 0) {
+      const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
+      const storedIdx = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (parsed && parsed.length > 0) {
+            setArticles(parsed);
+            console.log("[CACHE] NewsCarousel: Restoring articles from cache, count:", parsed.length);
+          }
+        } catch {
+          console.log("[CACHE] NewsCarousel: Failed to parse cached articles");
+        }
+      }
+      if (storedIdx) {
+        const idx = parseInt(storedIdx, 10);
+        if (!isNaN(idx) && idx >= 0) {
+          setInitialSlide(idx);
+          console.log("[CACHE] NewsCarousel: Restoring lastSlideIndex from cache:", idx);
+        }
+      }
+    }
+  }, [isControlled, initialArticles]);
   useEffect(() => {
     console.log("Articles state updated, articles.length =", articles.length);
   }, [articles]);
