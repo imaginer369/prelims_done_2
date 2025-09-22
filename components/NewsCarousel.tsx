@@ -60,6 +60,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
   useEffect(() => {
     if (!isControlled && initialArticles.length === 0) {
       const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
+      console.log("[CACHE] NewsCarousel: Checking for cached articles and last slide index");
       const storedIdx = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
       let restoredIdx = 0;
       if (cached) {
