@@ -48,9 +48,12 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
   useEffect(() => {
     if (typeof window !== "undefined") {
       const stored = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
+      console.log("Restored last slide index from session:", stored);
+
       const idx = stored ? parseInt(stored, 10) : 0;
       if (!isNaN(idx) && idx >= 0) {
         setInitialSlide(idx);
+        console.log("Setting initial slide to:", idx);
       }
     }
   }, []);
