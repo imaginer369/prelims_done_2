@@ -42,6 +42,7 @@ interface NewsCarouselProps {
  * - Uses Swiper for swipeable article slides
  */
 export default function NewsCarousel({ articles: propArticles, initialArticles = [] }: NewsCarouselProps) {
+  // ...existing code...
   console.log("NewsCarousel render: articles.length =", propArticles ? propArticles.length : initialArticles.length);
   const lastSlideIndexFromSession = typeof window !== "undefined" ? sessionStorage.getItem(LAST_SLIDE_INDEX_KEY) : null;
   console.log("lastSlideIndex from sessionStorage:", lastSlideIndexFromSession);
@@ -60,6 +61,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
     if (!isControlled && initialArticles.length === 0) {
       const cached = sessionStorage.getItem(ARTICLES_CACHE_KEY);
       const storedIdx = sessionStorage.getItem(LAST_SLIDE_INDEX_KEY);
+      let restoredIdx = 0;
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
@@ -75,9 +77,17 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
         const idx = parseInt(storedIdx, 10);
         if (!isNaN(idx) && idx >= 0) {
           setInitialSlide(idx);
+          restoredIdx = idx;
           console.log("[CACHE] NewsCarousel: Restoring lastSlideIndex from cache:", idx);
         }
       }
+      // Move Swiper to restored index after mount
+      setTimeout(() => {
+        if (swiperRef.current && restoredIdx > 0) {
+          swiperRef.current.slideTo(restoredIdx, 0);
+          console.log("[CACHE] NewsCarousel: Manually moved Swiper to restored index:", restoredIdx);
+        }
+      }, 0);
     }
   }, [isControlled, initialArticles]);
   useEffect(() => {
