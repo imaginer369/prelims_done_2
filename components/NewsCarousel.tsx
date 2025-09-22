@@ -73,7 +73,7 @@ export default function NewsCarousel({ articles: propArticles, initialArticles =
   const [articles, setArticles] = useState<(Article & { concepts?: Concept[] })[]>(
     isControlled ? propArticles! : (cachedArticles ? cachedArticles : initialArticles)
   );
-  const [initialSlide, setInitialSlide] = useState(
+  const [initialSlide] = useState(
     isControlled ? 0 : (cachedArticles ? cachedSlideIndex : 0)
   );
   useEffect(() => {
